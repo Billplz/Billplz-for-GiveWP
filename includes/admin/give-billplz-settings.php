@@ -135,30 +135,6 @@ class Give_Billplz_Settings
                 'id' => 'billplz_collect_billing',
                 'type' => 'checkbox',
             ),
-            array(
-                'name' => __('Checkout Heading', 'give-billplz'),
-                'desc' => __('This is the main heading within the modal checkout. Typically, this is the name of your organization, cause, or website.', 'give-billplz'),
-                'id' => 'billplz_checkout_name',
-                'row_classes' => 'billplz-checkout-field',
-                'default' => get_bloginfo('name'),
-                'type' => 'text',
-            ),
-            array(
-                'name' => __('Processing Text', 'give-billplz'),
-                'desc' => __('This text appears briefly after the donor has made a successful donation while Give is confirming the payment with the Billplz API.', 'give-billplz'),
-                'id' => 'billplz_checkout_processing_text',
-                'row_classes' => 'billplz-checkout-field',
-                'default' => __('Donation Processing...', 'give-billplz'),
-                'type' => 'text',
-            ),
-            array(
-                'name' => __('Remember Me', 'give-billplz'),
-                'desc' => __('Specify whether to include the option to "Remember Me" for future donations.', 'give-billplz'),
-                'id' => 'billplz_checkout_remember_me',
-                'row_classes' => 'billplz-checkout-field',
-                'default' => 'on',
-                'type' => 'checkbox',
-            ),
         );
 
         return array_merge($settings, $give_billplz_settings);

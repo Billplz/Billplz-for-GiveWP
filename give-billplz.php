@@ -287,6 +287,7 @@ if (!class_exists('Give_Billplz')) :
             }
 
             include( GIVE_BILLPLZ_PLUGIN_DIR . '/includes/billplz.php' );
+            include( GIVE_BILLPLZ_PLUGIN_DIR . '/includes/give-billplz-helpers.php' );
             include( GIVE_BILLPLZ_PLUGIN_DIR . '/includes/give-billplz-gateway.php' );
         }
         
