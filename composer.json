@@ -1,0 +1,14 @@
+{
+    "name"       : "wzul/billplz-for-givewp",
+    "description": "A Billplz plugin for integration with GiveWP.",
+    "homepage"   : "https://github.com/wzul/Billplz-for-GiveWP",
+    "type"       : "wordpress-plugin",
+    "license"    : "GPL-2.0+",
+    "support"    : {
+			"issues": "https://github.com/wzul/Billplz-for-GiveWP/issues",
+			"source": "https://github.com/wzul/Billplz-for-GiveWP"
+	},
+    "require"    : {
+        "composer/installers": "~1.0"
+    }
+}
