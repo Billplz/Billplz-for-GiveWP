@@ -33,6 +33,5 @@ function give_billplz_credit_card_form($form_id, $echo = true)
         remove_action('give_after_cc_fields', 'give_default_cc_address_fields');
     }
 
-    return $form;
 }
 add_action('give_billplz_cc_form', 'give_billplz_credit_card_form');
