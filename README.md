@@ -2,19 +2,19 @@
 
 Accept payment using Billplz by using this plugin.
 
-# System Requirements
+## Requirements
 
 * PHP 5.6, **7.0 (Recommended)**
 * GiveWP **version 1.8 or later**
 
-# Installation
+## Installation
 
-* Download here: [**Plugin Files**](https://codeload.github.com/wzul/Billplz-for-GiveWP/zip/master)
+* Download here: [**Plugin Files**](https://codeload.github.com/Billplz/Billplz-for-GiveWP/zip/master)
 * Login to **WordPress Dashboard**
 * Navigate to **Plugins >> Add New >> Upload**
 * Upload the files >> **Activate**
 
-# Configuration
+## Configuration
 
 1. Login to **WordPress Dashboard**
 2. Navigate to **Donations >> Settings >> Payment Gateways**
@@ -22,10 +22,10 @@ Accept payment using Billplz by using this plugin.
 4. Navigate to **Billplz Settings**
 5. Set **API Secret Key** and **X Signature Key**
 
-# Troubleshooting
+## Troubleshooting
 
 * Please make sure you have enabled X Signature Key properly on your [Billplz Account Settings](https://www.billplz.com/enterprise/setting)
 
-# Other
+## Other
 
-Please open an issue or email to wan@billplz.com
+Facebook: [Billplz Dev Jam](https://www.facebook.com/groups/billplzdevjam/)
