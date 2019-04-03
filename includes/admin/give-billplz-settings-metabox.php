@@ -46,9 +46,6 @@ class Give_Billplz_Settings_Metabox {
       return $settings;
     }
 
-    //Vars
-    $prefix = '_give_';
-
     $is_gateway_active = give_is_gateway_active('billplz');
 
     //this gateway isn't active

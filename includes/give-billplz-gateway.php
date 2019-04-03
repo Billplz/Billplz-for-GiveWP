@@ -80,7 +80,7 @@ class Give_Billplz_Gateway {
         'api_key'           => give_get_meta($form_id, 'billplz_api_key', true),
         'collection_id'     => give_get_meta($form_id, 'billplz_collection_id', true),
         'x_signature'       => give_get_meta($form_id, 'billplz_x_signature_key', true),
-        'description'       => give_get_meta($form_id, 'billplz_description', true),
+        'description'       => give_get_meta($form_id, 'billplz_description', true, true),
         'reference_1_label' => give_get_meta($form_id, 'billplz_reference_1_label', true),
         'reference_1'       => give_get_meta($form_id, 'billplz_reference_1', true),
         'reference_2_label' => give_get_meta($form_id, 'billplz_reference_2_label', true),
@@ -88,14 +88,14 @@ class Give_Billplz_Gateway {
       );
     }
     return array(
-      'api_key'           => give_get_option('billplz_api_key', true),
-      'collection_id'     => give_get_option('billplz_collection_id', true),
-      'x_signature'       => give_get_option('billplz_x_signature_key', true),
+      'api_key'           => give_get_option('billplz_api_key'),
+      'collection_id'     => give_get_option('billplz_collection_id'),
+      'x_signature'       => give_get_option('billplz_x_signature_key'),
       'description'       => give_get_option('billplz_description', true),
-      'reference_1_label' => give_get_option('billplz_reference_1_label', true),
-      'reference_1'       => give_get_option('billplz_reference_1', true),
-      'reference_2_label' => give_get_option('billplz_reference_2_label', true),
-      'reference_2'       => give_get_option('billplz_reference_2', true),
+      'reference_1_label' => give_get_option('billplz_reference_1_label'),
+      'reference_1'       => give_get_option('billplz_reference_1'),
+      'reference_2_label' => give_get_option('billplz_reference_2_label'),
+      'reference_2'       => give_get_option('billplz_reference_2'),
     );
   }
 
