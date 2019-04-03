@@ -3,7 +3,7 @@
 /**
  * Class Give_Billplz_Settings
  *
- * @since 3.0.0
+ * @since 3.0.2
  */
 class Give_Billplz_Settings {
 

@@ -6,7 +6,7 @@
  * @package     Billplz for GiveWP
  * @copyright   Copyright (c) 2019, Billplz
  * @license     https://opensource.org/licenses/gpl-license GNU Public License
- * @since       3.0.0
+ * @since       3.0.2
  */
 
 // Exit if accessed directly
@@ -17,7 +17,7 @@ if (!defined('ABSPATH')) {
 /**
  * Plugins row action links
  *
- * @since 3.0.0
+ * @since 3.0.2
  *
  * @param array $actions An array of plugin action links.
  *

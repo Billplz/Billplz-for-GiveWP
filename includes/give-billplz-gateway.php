@@ -58,7 +58,7 @@ class Give_Billplz_Gateway {
     /**
      * Filter the payment params.
      *
-     * @since 3.0.0
+     * @since 3.0.2
      *
      * @param array $insert_payment_data
      */
