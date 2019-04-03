@@ -19,9 +19,6 @@ if (!defined('ABSPATH')) {
  *
  * Required minimum versions, paths, urls, etc.
  */
-if (!defined('GIVE_BILLPLZ_VERSION')) {
-  define('GIVE_BILLPLZ_VERSION', '3.1.0');
-}
 if (!defined('GIVE_BILLPLZ_MIN_GIVE_VER')) {
   define('GIVE_BILLPLZ_MIN_GIVE_VER', '1.8.3');
 }
@@ -52,18 +49,6 @@ if (!class_exists('Give_Billplz')):
      * @var Give_Billplz The reference the *Singleton* instance of this class.
      */
     private static $instance;
-
-    /**
-     * @var Give_Billplz_Upgrades.
-     */
-    public $upgrades;
-
-    /**
-     * Notices (array)
-     *
-     * @var array
-     */
-    public $notices = array();
 
     /**
      * Returns the *Singleton* instance of this class.
@@ -111,9 +96,6 @@ if (!class_exists('Give_Billplz')):
 
       add_filter('give_payment_gateways', array($this, 'register_gateway'));
       add_action('init', array($this, 'register_post_statuses'), 110);
-      add_filter('give_payment_statuses', array($this, 'payment_status_labels'));
-
-      //load_plugin_textdomain('give-billplz', false, dirname(plugin_basename(__FILE__)) . '/languages');
 
       $this->includes();
     }
@@ -263,21 +245,6 @@ if (!class_exists('Give_Billplz')):
       );
 
       return $gateways;
-    }
-
-    /**
-     * Register our new payment status labels for Give Billplz.
-     *
-     * @since 1.0
-     *
-     * @param $statuses
-     *
-     * @return mixed
-     */
-    public function payment_status_labels($statuses) {
-      $statuses['processing'] = __('Processing', 'give-billplz');
-
-      return $statuses;
     }
   }
 

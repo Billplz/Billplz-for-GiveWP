@@ -20,7 +20,7 @@ class Give_Billplz_Settings_Metabox {
    */
   public function setup_hooks() {
     if (is_admin()) {
-      // Add settings.
+      add_action('admin_enqueue_scripts', array($this, 'enqueue_js'));
       add_filter('give_forms_billplz_metabox_fields', array($this, 'give_billplz_add_settings'));
       add_filter('give_metabox_form_data_settings', array($this, 'add_billplz_setting_tab'), 0, 1);
     }
@@ -144,6 +144,12 @@ class Give_Billplz_Settings_Metabox {
     );
 
     return array_merge($settings, $check_settings);
+  }
+
+  public function enqueue_js($hook) {
+    if ('post.php' === $hook || $hook === 'post-new.php') {
+      wp_enqueue_script('give_billplz_each_form', GIVE_BILLPLZ_PLUGIN_URL . '/includes/js/meta-box.js');
+    }
   }
 
 }

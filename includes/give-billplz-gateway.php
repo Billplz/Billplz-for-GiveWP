@@ -11,10 +11,10 @@ class Give_Billplz_Gateway {
   const LISTENER_PASSPHRASE = 'billplz_givewp_listener_passphrase';
 
   private function __construct() {
-    add_filter('give_enabled_payment_gateways', array($this, 'give_filter_billplz_gateway'), 10, 2);
-    add_action('give_gateway_billplz', array($this, 'process_payment'));
     add_action('init', array($this, 'return_listener'));
+    add_action('give_gateway_billplz', array($this, 'process_payment'));
     add_action('give_billplz_cc_form', array($this, 'give_billplz_cc_form'));
+    add_filter('give_enabled_payment_gateways', array($this, 'give_filter_billplz_gateway'), 10, 2);
   }
 
   static function get_instance() {
@@ -26,9 +26,7 @@ class Give_Billplz_Gateway {
   }
 
   public function give_filter_billplz_gateway($gateway_list, $form_id) {
-    if (
-      // Show offline payment gateway if enable for new donation form.
-      (false === strpos($_SERVER['REQUEST_URI'], '/wp-admin/post-new.php?post_type=give_forms'))
+    if ((false === strpos($_SERVER['REQUEST_URI'], '/wp-admin/post-new.php?post_type=give_forms'))
       && $form_id
       && !give_is_setting_enabled(give_get_meta($form_id, 'billplz_customize_billplz_donations', true, 'global'), array('enabled', 'global'))
     ) {
@@ -60,7 +58,7 @@ class Give_Billplz_Gateway {
     /**
      * Filter the payment params.
      *
-     * @since 1.8
+     * @since 3.0.0
      *
      * @param array $insert_payment_data
      */
@@ -194,6 +192,17 @@ class Give_Billplz_Gateway {
     echo ob_get_clean();
   }
 
+  private function publish_payment($payment_id, $data) {
+    if ('publish' !== get_post_status($payment_id)) {
+      give_update_payment_status($payment_id, 'publish');
+      if ($data['type'] === 'redirect') {
+        give_insert_payment_note($payment_id, "Bill ID: {$data['id']}.");
+      } else {
+        give_insert_payment_note($payment_id, "Bill ID: {$data['id']}. URL: {$data['url']}");
+      }
+    }
+  }
+
   public function return_listener() {
     if (!isset($_GET[self::QUERY_VAR])) {
       return;
@@ -235,15 +244,13 @@ class Give_Billplz_Gateway {
 
     $payment_id = give_get_meta($form_id, 'billplz_payment_id', true);
 
+    if ($data['paid']) {
+      $this->publish_payment($payment_id, $data);
+    }
+
     if ($data['type'] === 'redirect') {
       if ($data['paid']) {
         //give_send_to_success_page();
-
-        if ('publish' !== get_post_status($payment_id)) {
-          give_update_payment_status($payment_id, 'publish');
-          give_insert_payment_note($payment_id, "Bill ID: {$data['id']}.");
-        }
-
         $return = add_query_arg(array(
           'payment-confirmation' => 'billplz',
           'payment-id'           => $payment_id,
@@ -253,14 +260,6 @@ class Give_Billplz_Gateway {
       }
 
       wp_redirect($return);
-    } else {
-      if ($data['paid']) {
-        if ('publish' === get_post_status($payment_id)) {
-          return;
-        }
-        give_update_payment_status($payment_id, 'publish');
-        give_insert_payment_note($payment_id, "Bill ID: {$data['id']}. URL: {$data['url']}");
-      }
     }
     exit;
   }

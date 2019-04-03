@@ -3,7 +3,7 @@
 /**
  * Class Give_Billplz_Settings
  *
- * @since 3.1.0
+ * @since 3.0.0
  */
 class Give_Billplz_Settings {
 
@@ -56,7 +56,6 @@ class Give_Billplz_Settings {
 
     if (is_admin()) {
       // Add settings.
-      add_action('admin_enqueue_scripts', array($this, 'inject_js'));
       add_filter('give_settings_gateways', array($this, 'add_settings'), 99);
     }
   }
@@ -152,19 +151,13 @@ class Give_Billplz_Settings {
         'type'    => 'radio_inline',
         'default' => 'disabled',
         'options' => array(
-          'enabled'  => __('Enabled', 'give'),
-          'disabled' => __('Disabled', 'give'),
+          'enabled'  => __('Enabled', 'give-billplz'),
+          'disabled' => __('Disabled', 'give-billplz'),
         ),
       ),
     );
 
     return array_merge($settings, $give_billplz_settings);
-  }
-
-  public function inject_js($hook) {
-    if ('post.php' === $hook || $hook === 'post-new.php') {
-      wp_enqueue_script('give_billplz_each_form', GIVE_BILLPLZ_PLUGIN_URL . '/myscript.js');
-    }
   }
 }
 
