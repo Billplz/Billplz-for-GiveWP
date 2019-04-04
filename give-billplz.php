@@ -241,7 +241,7 @@ if (!class_exists('Give_Billplz')):
       // Format: ID => Name
       $label = array(
         'admin_label'    => __('Billplz', 'give-billplz'),
-        'checkout_label' => __('Online Banking', 'give-billplz'),
+        'checkout_label' => __('Billplz', 'give-billplz'),
       );
 
       $gateways['billplz'] = apply_filters('give_billplz_label', $label);
