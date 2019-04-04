@@ -239,10 +239,12 @@ if (!class_exists('Give_Billplz')):
     public function register_gateway($gateways) {
 
       // Format: ID => Name
-      $gateways['billplz'] = array(
+      $label = array(
         'admin_label'    => __('Billplz', 'give-billplz'),
-        'checkout_label' => __('Billplz', 'give-billplz'),
+        'checkout_label' => __('Online Banking', 'give-billplz'),
       );
+
+      $gateways['billplz'] = apply_filters('give_billplz_label', $label);
 
       return $gateways;
     }
