@@ -269,7 +269,7 @@ class BillplzGiveWPConnect {
         'email'         => isset($_POST['email']) ? $_POST['email'] : '',
         'id'            => isset($_POST['id']) ? $_POST['id'] : '',
         'mobile'        => isset($_POST['mobile']) ? $_POST['mobile'] : '',
-        'name'          => isset($_POST['name']) ? $_POST['name'] : '',
+        'name'          => isset($_POST['name']) ? stripslashes($_POST['name']) : '',
         'paid_amount'   => isset($_POST['paid_amount']) ? $_POST['paid_amount'] : '',
         'paid_at'       => isset($_POST['paid_at']) ? $_POST['paid_at'] : '',
         'paid'          => isset($_POST['paid']) ? $_POST['paid'] : '',
