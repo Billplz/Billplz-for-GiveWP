@@ -27,13 +27,13 @@ class BillplzGiveWPConnect
         );
     }
 
-    public function setMode($is_staging = false)
+    public function setStaging($is_staging = false)
     {
         $this->is_staging = $is_staging;
         if ($is_staging) {
-            $this->url = self::PRODUCTION_URL;
-        } else {
             $this->url = self::STAGING_URL;
+        } else {
+            $this->url = self::PRODUCTION_URL;
         }
     }
 
@@ -523,6 +523,21 @@ class BillplzGiveWPConnect
     public function getFpxBanks()
     {
         $url = $this->url . 'v3/fpx_banks';
+
+        $wp_remote_data['sslverify'] = false;
+        $wp_remote_data['headers'] = $this->header;
+        $wp_remote_data['method'] = 'GET';
+
+        $response = \wp_remote_post($url, $wp_remote_data);
+        $header = $response['response']['code'];
+        $body = \wp_remote_retrieve_body($response);
+
+        return array($header, $body);
+    }
+
+    public function getPaymentGateways()
+    {
+        $url = $this->url . 'v4/payment_gateways';
 
         $wp_remote_data['sslverify'] = false;
         $wp_remote_data['headers'] = $this->header;
