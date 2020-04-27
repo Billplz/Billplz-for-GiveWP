@@ -3,7 +3,7 @@ Contributors: wzul
 Tags: billplz, donation
 Requires at least: 4.2
 Tested up to: 4.8.2
-Stable tag: 3.1.0
+Stable tag: 3.2.0
 License: GPLv3
 License URI: https://opensource.org/licenses/GPL-3.0
 
@@ -14,6 +14,10 @@ Billplz Add-on for Give
 Add payment gateway for Billplz.
 
 == Changelog ==
+
+= 3.2.0=
+* IMPROVED: Fix issue when having multiple donation attempt at the same time.
+* IMPROVED: Billplz now respect to Give Test configuration.
 
 = 3.1.0 =
 * NEW: Support for latest Give plugin version 2.5.x.

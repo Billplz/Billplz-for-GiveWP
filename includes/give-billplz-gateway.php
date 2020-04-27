@@ -17,6 +17,7 @@ class Give_Billplz_Gateway
         add_action('give_gateway_billplz', array($this, 'process_payment'));
         add_action('give_billplz_cc_form', array($this, 'give_billplz_cc_form'));
         add_filter('give_enabled_payment_gateways', array($this, 'give_filter_billplz_gateway'), 10, 2);
+        add_filter('give_payment_confirm_billplz', array($this, 'give_billplz_success_page_content'));
     }
 
     public static function get_instance()
@@ -105,7 +106,7 @@ class Give_Billplz_Gateway
         );
     }
 
-    public static function get_listener_url($form_id)
+    public static function get_listener_url($payment_id)
     {
         $passphrase = get_option(self::LISTENER_PASSPHRASE, false);
         if (!$passphrase) {
@@ -115,7 +116,7 @@ class Give_Billplz_Gateway
 
         $arg = array(
             self::QUERY_VAR => $passphrase,
-            'form_id' => $form_id,
+            'payment_id' => $payment_id,
         );
         return add_query_arg($arg, site_url('/'));
     }
@@ -136,7 +137,6 @@ class Give_Billplz_Gateway
             give_send_back_to_checkout();
         }
 
-        $form_id = intval($purchase_data['post_data']['give-form-id']);
         $billplz_key = $this->get_billplz($purchase_data);
 
         $name = $purchase_data['user_info']['first_name'] . ' ' . $purchase_data['user_info']['last_name'];
@@ -146,7 +146,7 @@ class Give_Billplz_Gateway
             'email' => $purchase_data['user_email'],
             'name' => empty($name) ? $purchase_data['user_email'] : trim($name),
             'amount' => strval($purchase_data['price'] * 100),
-            'callback_url' => self::get_listener_url($form_id),
+            'callback_url' => self::get_listener_url($payment_id),
             'description' => substr(trim($billplz_key['description']), 0, 120),
         );
 
@@ -173,7 +173,7 @@ class Give_Billplz_Gateway
         }
 
         $connect = new BillplzGiveWPConnect($billplz_key['api_key']);
-        $connect->detectMode();
+        $connect->setStaging(give_is_test_mode());
         $billplz = new BillplzGiveAPI($connect);
 
         list($rheader, $rbody) = $billplz->toArray($billplz->createBill($parameter, $optional));
@@ -186,8 +186,7 @@ class Give_Billplz_Gateway
             give_send_back_to_checkout('?payment-mode=' . $purchase_data['post_data']['give-gateway']);
         }
 
-        give_update_meta($form_id, 'billplz_id', $rbody['id']);
-        give_update_meta($form_id, 'billplz_payment_id', $payment_id);
+        give_update_meta($payment_id, 'billplz_id', $rbody['id']);
 
         wp_redirect($rbody['url']);
         exit;
@@ -243,10 +242,13 @@ class Give_Billplz_Gateway
             return;
         }
 
-        if (!isset($_GET['form_id'])) {
+        if (!isset($_GET['payment_id'])) {
+            status_header(403);
             exit;
         }
-        $form_id = preg_replace('/\D/', '', $_GET['form_id']);
+
+        $payment_id = preg_replace('/\D/', '', $_GET['payment_id']);
+        $form_id = give_get_payment_form_id($payment_id);
 
         $custom_donation = give_get_meta($form_id, 'billplz_customize_billplz_donations', true, 'global');
         $status = give_is_setting_enabled($custom_donation, 'enabled');
@@ -264,13 +266,12 @@ class Give_Billplz_Gateway
             exit('Failed X Signature Validation');
         }
 
-        if ($data['id'] !== give_get_meta($form_id, 'billplz_id', true)) {
+        if ($data['id'] !== give_get_meta($payment_id, 'billplz_id', true)) {
+            status_header(404);
             exit('No Billplz ID found');
         }
 
-        $payment_id = give_get_meta($form_id, 'billplz_payment_id', true);
-
-        if ($data['paid']) {
+        if ($data['paid'] && give_get_payment_status($payment_id)) {
             $this->publish_payment($payment_id, $data);
         }
 
@@ -290,5 +291,32 @@ class Give_Billplz_Gateway
         exit;
     }
 
+    public function give_billplz_success_page_content($content)
+    {
+        if ( ! isset( $_GET['payment-id'] ) && ! give_get_purchase_session() ) {
+          return $content;
+        }
+
+        $payment_id = isset( $_GET['payment-id'] ) ? absint( $_GET['payment-id'] ) : false;
+
+        if ( ! $payment_id ) {
+            $session    = give_get_purchase_session();
+            $payment_id = give_get_donation_id_by_key( $session['purchase_key'] );
+        }
+
+        $payment = get_post( $payment_id );
+        if ( $payment && 'pending' === $payment->post_status ) {
+
+            // Payment is still pending so show processing indicator to fix the race condition.
+            ob_start();
+
+            give_get_template_part( 'payment', 'processing' );
+
+            $content = ob_get_clean();
+
+        }
+
+        return $content;
+    }
 }
 Give_Billplz_Gateway::get_instance();

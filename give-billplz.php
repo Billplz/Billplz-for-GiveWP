@@ -2,8 +2,8 @@
 /**
  * Plugin Name: Billplz for GiveWP
  * Plugin URI:  https://github.com/billplz/billplz-for-givewp
- * Description: Billplz Payment Gateway | <a href="https://www.billplz.com/enterprise/signup" target="_blank">Sign up Now</a>.
- * Version:     3.1.0
+ * Description: Billplz. Fair payment platform. | <a href="https://www.billplz.com/enterprise/signup" target="_blank">Sign up Now</a>.
+ * Version:     3.2.0
  * Author:      Billplz Sdn Bhd
  * Author URI:  https://www.billplz.com
  * Text Domain: give-billplz
