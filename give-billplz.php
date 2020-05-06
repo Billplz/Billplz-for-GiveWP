@@ -3,7 +3,7 @@
  * Plugin Name: Billplz for GiveWP
  * Plugin URI:  https://github.com/billplz/billplz-for-givewp
  * Description: Billplz. Fair payment platform. | <a href="https://www.billplz.com/enterprise/signup" target="_blank">Sign up Now</a>.
- * Version:     3.2.0
+ * Version:     3.2.1
  * Author:      Billplz Sdn Bhd
  * Author URI:  https://www.billplz.com
  * Text Domain: give-billplz
@@ -95,7 +95,6 @@ if (!class_exists('Give_Billplz')):
       }
 
       add_filter('give_payment_gateways', array($this, 'register_gateway'));
-      add_action('init', array($this, 'register_post_statuses'), 110);
 
       $this->includes();
     }
@@ -217,13 +216,6 @@ if (!class_exists('Give_Billplz')):
       include GIVE_BILLPLZ_PLUGIN_DIR . '/includes/Billplz_API.php';
       include GIVE_BILLPLZ_PLUGIN_DIR . '/includes/Billplz_WPConnect.php';
       include GIVE_BILLPLZ_PLUGIN_DIR . '/includes/give-billplz-gateway.php';
-    }
-
-    /**
-     * Only have this method as it is mandatory from Give.
-     */
-    public function register_post_statuses() {
-
     }
 
     /**
