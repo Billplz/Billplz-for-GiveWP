@@ -50,6 +50,9 @@ if (!class_exists('Give_Billplz')):
      */
     private static $instance;
 
+    public $notices = array();
+
+
     /**
      * Returns the *Singleton* instance of this class.
      *
@@ -81,6 +84,7 @@ if (!class_exists('Give_Billplz')):
      */
     protected function __construct() {
       add_action('admin_init', array($this, 'check_environment'));
+      add_action('admin_notices', array($this, 'admin_notices'), 15);
       add_action('plugins_loaded', array($this, 'init'));
     }
 
@@ -195,6 +199,40 @@ if (!class_exists('Give_Billplz')):
       }
 
       return false;
+    }
+
+    public function add_admin_notice($slug, $class, $message)
+    {
+        $this->notices[$slug] = array(
+            'class' => $class,
+            'message' => $message,
+        );
+    }
+
+    /**
+     * Display admin notices.
+     */
+    public function admin_notices()
+    {
+        $allowed_tags = array(
+            'a' => array(
+                'href' => array(),
+                'title' => array(),
+                'class' => array(),
+                'id' => array()
+            ),
+            'br' => array(),
+            'em' => array(),
+            'span' => array(
+                'class' => array(),
+            ),
+            'strong' => array(),
+        );
+        foreach ((array) $this->notices as $notice_key => $notice) {
+            echo "<div class='" . esc_attr($notice['class']) . "'><p>";
+            echo wp_kses($notice['message'], $allowed_tags);
+            echo '</p></div>';
+        }
     }
 
     /**
