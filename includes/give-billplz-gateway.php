@@ -172,6 +172,7 @@ class Give_Billplz_Gateway
             unset($optional['reference_2_label']);
         }
 
+        $parameter = apply_filters('give_billplz_bill_mandatory_param', $parameter, $purchase_data['post_data']);
         $optional = apply_filters('give_billplz_bill_optional_param', $optional, $purchase_data['post_data']);
 
         $connect = new BillplzGiveWPConnect($billplz_key['api_key']);
