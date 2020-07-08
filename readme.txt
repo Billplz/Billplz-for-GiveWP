@@ -3,7 +3,7 @@ Contributors: wzul
 Tags: billplz, donation
 Requires at least: 4.2
 Tested up to: 5.4.1
-Stable tag: 3.2.1
+Stable tag: 3.3.0
 License: GPLv3
 License URI: https://opensource.org/licenses/GPL-3.0
 
@@ -14,6 +14,10 @@ Billplz Add-on for Give
 Add payment gateway for Billplz.
 
 == Changelog ==
+
+= 3.3.0 = 
+* Add new filter for modifying required parameter during bill creation.
+* Fix issue on redirect_url
 
 = 3.2.1 =
 * NEW : Add filter for Reference 1 and 2
