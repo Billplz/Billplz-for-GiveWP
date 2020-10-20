@@ -1,9 +1,9 @@
 === Billplz for GiveWP ===
-Contributors: wzul
-Tags: billplz, donation
+Contributors: wanzulnet
+Tags: billplz
 Requires at least: 4.2
-Tested up to: 5.4.1
-Stable tag: 3.3.0
+Tested up to: 5.5.1
+Stable tag: 3.4.0
 License: GPLv3
 License URI: https://opensource.org/licenses/GPL-3.0
 
@@ -14,6 +14,9 @@ Billplz Add-on for Give
 Add payment gateway for Billplz.
 
 == Changelog ==
+
+= 3.4.0 =
+* NEW: Support for Enable Extra Payment Completion Information
 
 = 3.3.0 = 
 * Add new filter for modifying required parameter during bill creation.
