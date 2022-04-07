@@ -14,7 +14,7 @@ jQuery( function ( $ ) {
       $(".billplz_reference_1_field").show();
       $(".billplz_reference_2_label_field").show();
       $(".billplz_reference_2_field").show();
-      $(".billplz_collect_billing_field").show();
+      $(".billplz_donation_content_field").show();
     } else {
       $(".billplz_api_key_field").hide();
       $(".billplz_collection_id_field").hide();
@@ -24,7 +24,7 @@ jQuery( function ( $ ) {
       $(".billplz_reference_1_field").hide();
       $(".billplz_reference_2_label_field").hide();
       $(".billplz_reference_2_field").hide();
-      $(".billplz_collect_billing_field").hide();
+      $(".billplz_donation_content_field").hide();
     }
   }
 });

@@ -132,7 +132,9 @@ class Give_Billplz_Gateway
         if (empty($payment_id)) {
             // Record the error.
             give_record_gateway_error(__('Payment Error', 'give-billplz'), sprintf( /* translators: %s: payment data */
-                __('Payment creation failed before sending donor to Billplz. Payment data: %s', 'give-billplz'), json_encode($purchase_data)), $payment_id);
+                __('Payment creation failed before sending donor to Billplz. Payment data: %s', 'give-billplz'),
+                json_encode($purchase_data)
+            ), $payment_id);
             // Problems? Send back.
             give_send_back_to_checkout();
         }
@@ -184,7 +186,9 @@ class Give_Billplz_Gateway
         if ($rheader !== 200) {
             // Record the error.
             give_record_gateway_error(__('Payment Error', 'give-billplz'), sprintf( /* translators: %s: payment data */
-                __('Bill creation failed. Error message: %s', 'give-billplz'), json_encode($rbody)), $payment_id);
+                __('Bill creation failed. Error message: %s', 'give-billplz'),
+                json_encode($rbody)
+            ), $payment_id);
             // Problems? Send back.
             give_send_back_to_checkout('?payment-mode=' . $purchase_data['post_data']['give-gateway']);
         }
@@ -197,25 +201,69 @@ class Give_Billplz_Gateway
 
     public function give_billplz_cc_form($form_id)
     {
-        // ob_start();
+        $billplz_instructions = self::get_billplz_payment_instruction($form_id, true);
 
-        $post_billlz_customize_option = give_get_meta($form_id, 'billplz_customize_billplz_donations', true, 'global');
+        ob_start();
 
-        // Enable Default fields (billing info)
-        $post_billplz_cc_fields = give_get_meta($form_id, 'billplz_collect_billing', true);
-        $global_billplz_cc_fields = give_get_option('billplz_collect_billing');
+        // $post_billlz_customize_option = give_get_meta($form_id, 'billplz_customize_billplz_donations', true, 'global');
 
-        // Output Address fields if global option is on and user hasn't elected to customize this form's offline donation options
-        if (
-            (give_is_setting_enabled($post_billlz_customize_option, 'global') && give_is_setting_enabled($global_billplz_cc_fields))
-            || (give_is_setting_enabled($post_billlz_customize_option, 'enabled') && give_is_setting_enabled($post_billplz_cc_fields))
-        ) {
-            give_default_cc_address_fields($form_id);
-            return true;
+        do_action('give_before_billplz_info_fields', $form_id);
+?>
+        <fieldset class="no-fields" id="give_billplz_payment_info">
+            <?php echo stripslashes($billplz_instructions); ?>
+        </fieldset>
+<?php
+
+        do_action('give_after_billplz_info_fields', $form_id);
+
+        echo ob_get_clean();
+    }
+
+    private function get_billplz_payment_instruction($form_id, $wpautop = false)
+    {
+        // Bailout.
+        if (!$form_id) {
+            return '';
         }
 
-        return false;
-        // echo ob_get_clean();
+        $post_billplz_customization_option = give_get_meta( $form_id, 'billplz_customize_billplz_donations', true );
+        $post_billplz_customization_option_enabled = give_is_setting_enabled( $post_billplz_customization_option );
+
+        if ( $post_billplz_customization_option === 'disabled' ) {
+            return '';
+        }
+
+        $post_billplz_instructions = give_get_meta($form_id, 'billplz_donation_content', true);
+        $global_billplz_instructions = give_get_option('global_billplz_donation_content');
+        $billplz_instructions_content = $post_billplz_customization_option_enabled ? $post_billplz_instructions : $global_billplz_instructions;
+
+        $formatted_billplz_instructions = self::get_formatted_billplz_instructions(
+            $billplz_instructions_content,
+            $form_id,
+            $wpautop
+        );
+
+        return apply_filters(
+            'give_the_billplz_instructions_content',
+            $formatted_billplz_instructions,
+            $billplz_instructions_content,
+            $form_id,
+            $wpautop
+        );
+    }
+
+    private function get_formatted_billplz_instructions( $instructions, $form_id, $wpautop = false ) {
+        $settings_url = admin_url( 'post.php?post=' . $form_id . '&action=edit&message=1&give_tab=billplz_options' );
+    
+        /* translators: %s: form settings url */
+        $billplz_instructions = ! empty( $instructions ) ? $instructions : sprintf(
+            __( 'Please enter billplz donation instructions in <a href="%s">this form\'s settings</a>.', 'give' ),
+            $settings_url
+        );
+
+        $billplz_instructions = give_do_email_tags( $billplz_instructions, null );
+
+        return $wpautop ? wpautop( do_shortcode( $billplz_instructions ) ) : $billplz_instructions;
     }
 
     private function publish_payment($payment_id, $data)
@@ -296,30 +344,43 @@ class Give_Billplz_Gateway
 
     public function give_billplz_success_page_content($content)
     {
-        if ( ! isset( $_GET['payment-id'] ) && ! give_get_purchase_session() ) {
-          return $content;
+        if (!isset($_GET['payment-id']) && !give_get_purchase_session()) {
+            return $content;
         }
 
-        $payment_id = isset( $_GET['payment-id'] ) ? absint( $_GET['payment-id'] ) : false;
+        $payment_id = isset($_GET['payment-id']) ? absint($_GET['payment-id']) : false;
 
-        if ( ! $payment_id ) {
+        if (!$payment_id) {
             $session    = give_get_purchase_session();
-            $payment_id = give_get_donation_id_by_key( $session['purchase_key'] );
+            $payment_id = give_get_donation_id_by_key($session['purchase_key']);
         }
 
-        $payment = get_post( $payment_id );
-        if ( $payment && 'pending' === $payment->post_status ) {
+        $payment = get_post($payment_id);
+        if ($payment && 'pending' === $payment->post_status) {
 
             // Payment is still pending so show processing indicator to fix the race condition.
             ob_start();
 
-            give_get_template_part( 'payment', 'processing' );
+            give_get_template_part('payment', 'processing');
 
             $content = ob_get_clean();
-
         }
 
         return $content;
+    }
+
+    /**
+     * Billplz Donation Content
+     *
+     * Get default billplz donation text
+     *
+     * @return string
+     */
+    public static function get_default_billplz_donation_content()
+    {
+        $default_text = '<p>' . __('To make an billplz donation toward this cause, follow these steps:', 'give-billplz') . ' </p>';
+
+        return apply_filters('give_default_billplz_donation_content', $default_text);
     }
 }
 Give_Billplz_Gateway::get_instance();

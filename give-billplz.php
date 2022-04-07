@@ -3,7 +3,7 @@
  * Plugin Name: Billplz for GiveWP
  * Plugin URI:  https://github.com/billplz/billplz-for-givewp
  * Description: Billplz. Fair payment platform.
- * Version:     3.4.0
+ * Version:     3.5.0
  * Author:      Billplz Sdn Bhd
  * Author URI:  https://www.billplz.com
  * Text Domain: give-billplz

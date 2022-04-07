@@ -6,7 +6,6 @@ class Give_Billplz_Settings_Metabox
 
     private function __construct()
     {
-
     }
 
     public static function get_instance()
@@ -69,11 +68,13 @@ class Give_Billplz_Settings_Metabox
                 'id' => 'billplz_customize_billplz_donations',
                 'type' => 'radio_inline',
                 'default' => 'global',
-                'options' => apply_filters('give_forms_content_options_select', array(
-                    'global' => __('Global Option', 'give-billplz'),
-                    'enabled' => __('Customize', 'give-billplz'),
-                    'disabled' => __('Disable', 'give-billplz'),
-                )
+                'options' => apply_filters(
+                    'give_forms_content_options_select',
+                    array(
+                        'global' => __('Global Option', 'give-billplz'),
+                        'enabled' => __('Customize', 'give-billplz'),
+                        'disabled' => __('Disable', 'give-billplz'),
+                    )
                 ),
             ),
             array(
@@ -133,16 +134,15 @@ class Give_Billplz_Settings_Metabox
                 'row_classes' => 'give-billplz-key',
             ),
             array(
-                'name' => __('Billing Fields', 'give-billplz'),
-                'desc' => __('This option will enable the billing details section for Billplz which requires the donor\'s address to complete the donation. These fields are not required by Billplz to process the transaction, but you may have the need to collect the data.', 'give-billplz'),
-                'id' => 'billplz_collect_billing',
-                'row_classes' => 'give-subfield give-hidden',
-                'type' => 'radio_inline',
-                'default' => 'disabled',
-                'options' => array(
-                    'enabled' => __('Enabled', 'give-billplz'),
-                    'disabled' => __('Disabled', 'give-billplz'),
-                ),
+                'name'    => __('Billplz Donation Instructions', 'give-billplz'),
+                'desc'    => __('The Billplz Donation Instructions are a chance for you to educate the donor on how to best submit donations. These instructions appear directly on the form, and after submission of the form. Note: You may also customize the instructions on individual forms as needed.', 'give-billplz'),
+                'id'      => 'billplz_donation_content',
+                'default' => Give_Billplz_Gateway::get_default_billplz_donation_content(),
+                'type'    => 'wysiwyg',
+                'row_classes' => 'give-billplz-key',
+                'options' => [
+                    'textarea_rows' => 6,
+                ],
             ),
         );
 
@@ -155,6 +155,5 @@ class Give_Billplz_Settings_Metabox
             wp_enqueue_script('give_billplz_each_form', GIVE_BILLPLZ_PLUGIN_URL . '/includes/js/meta-box.js');
         }
     }
-
 }
 Give_Billplz_Settings_Metabox::get_instance()->setup_hooks();
