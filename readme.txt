@@ -2,8 +2,8 @@
 Contributors: wanzulnet
 Tags: billplz
 Requires at least: 4.2
-Tested up to: 5.5.1
-Stable tag: 3.4.0
+Tested up to: 5.9.3
+Stable tag: 3.5.0
 License: GPLv3
 License URI: https://opensource.org/licenses/GPL-3.0
 
@@ -14,6 +14,10 @@ Billplz Add-on for Give
 Add payment gateway for Billplz.
 
 == Changelog ==
+
+= 3.5.0 =
+* REMOVED: Billing fields as Billplz are not using the fields.
+* NEW: Add payment method description.
 
 = 3.4.0 =
 * NEW: Support for Enable Extra Payment Completion Information

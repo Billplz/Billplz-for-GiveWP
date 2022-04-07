@@ -32,7 +32,6 @@ class Give_Billplz_Settings
      */
     private function __construct()
     {
-
     }
 
     /**
@@ -157,15 +156,14 @@ class Give_Billplz_Settings
                 'row_classes' => 'give-billplz-key',
             ),
             array(
-                'name' => __('Billing Fields', 'give-billplz'),
-                'desc' => __('This option will enable the billing details section for Billplz which requires the donor\'s address to complete the donation. These fields are not required by Billplz to process the transaction, but you may have the need to collect the data.', 'give-billplz'),
-                'id' => 'billplz_collect_billing',
-                'type' => 'radio_inline',
-                'default' => 'disabled',
-                'options' => array(
-                    'enabled' => __('Enabled', 'give-billplz'),
-                    'disabled' => __('Disabled', 'give-billplz'),
-                ),
+                'name'    => __('Billplz Donation Instructions', 'give-billplz'),
+                'desc'    => __('The Billplz Donation Instructions are a chance for you to educate the donor on how to best submit donations. These instructions appear directly on the form, and after submission of the form. Note: You may also customize the instructions on individual forms as needed.', 'give-billplz'),
+                'id'      => 'global_billplz_donation_content',
+                'default' => Give_Billplz_Gateway::get_default_billplz_donation_content(),
+                'type'    => 'wysiwyg',
+                'options' => [
+                    'textarea_rows' => 6,
+                ],
             ),
             array(
                 'type' => 'sectionend',
