@@ -1,17 +1,35 @@
 === Billplz for GiveWP ===
-Contributors: wanzulnet
-Tags: billplz
-Requires at least: 4.2
-Tested up to: 5.5.1
-Stable tag: 3.4.0
-License: GPLv3
-License URI: https://opensource.org/licenses/GPL-3.0
+Contributors: billplz, yiedpozi, wanzulnet
+Tags: give, donation, billplz, payment
+Requires at least: 4.6
+Tested up to: 6.2
+Stable tag: 4.0.0
+Requires PHP: 7.0
+License: GPLv3 or later License
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Billplz Add-on for Give
+Billplz payment gateway integration with GiveWP.
 
 == Description ==
 
-Add payment gateway for Billplz.
+Billplz payment gateway integration with GiveWP.
+
+== Installation ==
+
+= Minimum Requirements =
+
+* WordPress 4.7
+* GiveWP 3.0
+
+= Automatic installation =
+
+Automatic installation is the easiest option -- WordPress will handle the file transfer, and you won’t need to leave your web browser. To do an automatic install of Billplz for GiveWP, log in to your WordPress dashboard, navigate to the Plugins menu, and click “Add New.”
+
+In the search field type “Billplz for GiveWP,” then click “Search Plugins.” Once you’ve found us,  you can view details about it such as the point release, rating, and description. Most importantly of course, you can install it by! Click “Install Now,” and WordPress will take it from there.
+
+= Manual installation =
+
+Manual installation method requires downloading the Billplz for GiveWP plugin and uploading it to your web server via your favorite FTP application. The WordPress codex contains [instructions on how to do this here](https://wordpress.org/support/article/managing-plugins/#manual-plugin-installation).
 
 == Changelog ==
 
@@ -36,5 +54,5 @@ Add payment gateway for Billplz.
 = 3.0.2 =
 * NEW: Added ability to set different Billplz account for each forms.
 
-= 1.0 =
+= 1.0.0 =
 * Initial release.
