@@ -44,13 +44,21 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
         return __( 'Billplz', 'billplz-givewp' );
     }
 
-    // Enqueue scripts for V3 donation forms
+    /**
+     * Enqueue scripts for V3 donation forms.
+     * 
+     * @since 4.0.0
+     */
     public function enqueueScript( int $formId )
     {
         wp_enqueue_script( 'billplz-givewp', BILLPLZ_GIVEWP_URL . 'assets/js/gateway.js', array( 'react', 'wp-element' ), BILLPLZ_GIVEWP_VERSION, true );
     }
 
-    // Send form settings to the JS gateway counterpart
+    /**
+     * Send form settings to the JS gateway counterpart.
+     * 
+     * @since 4.0.0
+     */
     public function formSettings(int $formId): array
     {
         return [

@@ -5,9 +5,16 @@ use Give\Framework\PaymentGateways\PaymentGatewayRegister;
 if ( !defined( 'ABSPATH' ) ) exit;
 
 class Billplz_GiveWP {
+    /**
+     * Class instance.
+     * 
+     * @var Billplz_GiveWP
+     */
     private static $_instance;
 
-    // Get an instance of the plugin
+    /**
+     * Get an instance of the plugin.
+     */
     public static function get_instance() {
         if ( self::$_instance === null ) {
             self::$_instance = new self();
@@ -16,21 +23,31 @@ class Billplz_GiveWP {
         return self::$_instance;
     }
 
-    // Constructor
+    /* 
+     * Constructor.
+     */
     public function __construct() {
         $this->define_constants();
         $this->includes();
         $this->init_hooks();
     }
 
-    // Define plugin constants
+    /**
+     * Define plugin constants.
+     * 
+     * @since 4.0.0
+     */
     private function define_constants() {
         define( 'BILLPLZ_GIVEWP_URL', plugin_dir_url( BILLPLZ_GIVEWP_FILE ) );
         define( 'BILLPLZ_GIVEWP_PATH', plugin_dir_path( BILLPLZ_GIVEWP_FILE ) );
         define( 'BILLPLZ_GIVEWP_BASENAME', plugin_basename( BILLPLZ_GIVEWP_FILE ) );
     }
 
-    // Include required core files
+    /**
+     * Include required core files.
+     * 
+     * @since 4.0.0
+     */
     private function includes() {
         // API
         require_once BILLPLZ_GIVEWP_PATH . 'includes/abstracts/abstract-billplz-givewp-client.php';
@@ -44,12 +61,20 @@ class Billplz_GiveWP {
         require_once BILLPLZ_GIVEWP_PATH . 'includes/admin/class-billplz-givewp-settings.php';
     }
 
-    // Hook into actions and filters
+    /**
+     * Hook into actions and filters.
+     * 
+     * @since 4.0.0
+     */
     private function init_hooks() {
         add_action( 'givewp_register_payment_gateway', array( $this, 'register_gateway' ) );
     }
 
-    // Register Billplz as a payment method in GiveWP
+    /**
+     * Register Billplz as a payment method in GiveWP.
+     * 
+     * @since 4.0.0
+     */
     public function register_gateway( PaymentGatewayRegister $registrar ) {
         include_once BILLPLZ_GIVEWP_PATH . 'includes/class-billplz-givewp-gateway.php';
 
