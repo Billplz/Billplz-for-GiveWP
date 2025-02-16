@@ -1,4 +1,7 @@
 <?php
+
+use Give\Framework\PaymentGateways\PaymentGatewayRegister;
+
 if ( !defined( 'ABSPATH' ) ) exit;
 
 class Billplz_GiveWP {
@@ -17,6 +20,7 @@ class Billplz_GiveWP {
     public function __construct() {
         $this->define_constants();
         $this->includes();
+        $this->init_hooks();
     }
 
     // Define plugin constants
@@ -27,7 +31,7 @@ class Billplz_GiveWP {
     }
 
     // Include required core files
-    public function includes() {
+    private function includes() {
         // API
         require_once BILLPLZ_GIVEWP_PATH . 'includes/abstracts/abstract-billplz-givewp-client.php';
         require_once BILLPLZ_GIVEWP_PATH . 'includes/class-billplz-givewp-api.php';
@@ -38,9 +42,18 @@ class Billplz_GiveWP {
         // Plugin settings
         require_once BILLPLZ_GIVEWP_PATH . 'includes/admin/class-billplz-givewp-settings-metabox.php';
         require_once BILLPLZ_GIVEWP_PATH . 'includes/admin/class-billplz-givewp-settings.php';
+    }
 
-        // Gateway integration
-        require_once BILLPLZ_GIVEWP_PATH . 'includes/class-billplz-givewp-gateway.php';
+    // Hook into actions and filters
+    private function init_hooks() {
+        add_action( 'givewp_register_payment_gateway', array( $this, 'register_gateway' ) );
+    }
+
+    // Register Billplz as a payment method in GiveWP
+    public function register_gateway( PaymentGatewayRegister $registrar ) {
+        include_once BILLPLZ_GIVEWP_PATH . 'includes/class-billplz-givewp-gateway.php';
+
+        $registrar->registerGateway(Billplz_GiveWP_Gateway::class);
     }
 }
 
