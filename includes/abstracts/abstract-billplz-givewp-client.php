@@ -1,572 +1,338 @@
 <?php
+if ( !defined( 'ABSPATH' ) ) exit;
 
-class BillplzGiveWPConnect
-{
-    private $api_key;
-    private $x_signature_key;
-    private $collection_id;
+/**
+ * API client class.
+ * 
+ * @since 4.0.0
+ */
+abstract class Billplz_GiveWP_Client {
 
-    private $process; //cURL or GuzzleHttp
-    public $is_staging;
-    public $detect_mode;
-    public $url;
-    public $webhook_rank;
+    const PRODUCTION_API_URL = 'https://www.billplz.com/api/';
+    const SANDBOX_API_URL = 'https://www.billplz-sandbox.com/api/';
 
-    public $header;
+    protected $api_key;
+    protected $sandbox = true;
 
-    const TIMEOUT = 10; //10 Seconds
-    const PRODUCTION_URL = 'https://www.billplz.com/api/';
-    const STAGING_URL = 'https://www.billplz-sandbox.com/api/';
-
-    public function __construct($api_key)
-    {
-        $this->api_key = $api_key;
-
-        $this->header = array(
-            'Authorization' => 'Basic ' . base64_encode($this->api_key . ':'),
-        );
-    }
-
-    public function setStaging($is_staging = false)
-    {
-        $this->is_staging = $is_staging;
-        if ($is_staging) {
-            $this->url = self::STAGING_URL;
+    /**
+     * HTTP request URL.
+     * 
+     * @since 4.0.0
+     * 
+     * @param string|null $route
+     */
+    private function get_url( $route = null ) {
+        if ( $this->sandbox ) {
+            return self::SANDBOX_API_URL . $route;
         } else {
-            $this->url = self::PRODUCTION_URL;
+            return self::PRODUCTION_API_URL . $route;
         }
     }
 
-    public function detectMode()
-    {
-        $this->url = self::PRODUCTION_URL;
-        $this->detect_mode = true;
-        return $this;
-    }
+    /**
+     * HTTP request headers.
+     * 
+     * @since 4.0.0
+     * 
+     * @return array
+     */
+    private function get_headers() {
+        $headers = array(
+            'Accept'       => 'application/json',
+            'Content-Type' => 'application/json',
+        );
 
-    public function getWebhookRank()
-    {
-        $url = $this->url . 'v4/webhook_rank';
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function getCollectionIndex($parameter = array())
-    {
-        $url = $this->url . 'v4/collections?' . http_build_query($parameter);
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function createCollection($title, $optional = array())
-    {
-        $url = $this->url . 'v4/collections';
-
-        $body = http_build_query(array('title' => $title));
-        if (isset($optional['split_header'])) {
-            $split_header = http_build_query(array('split_header' => $optional['split_header']));
+        if ( $this->api_key ) {
+            $headers['Authorization'] = 'Basic ' . base64_encode( $this->api_key . ':' );
         }
 
-        $split_payments = array();
-        if (isset($optional['split_payments'])) {
-            foreach ($optional['split_payments'] as $param) {
-                $split_payments[] = http_build_query($param);
-            }
+        return $headers;
+    }
+
+    /**
+     * Handle HTTP GET request.
+     * 
+     * @since 4.0.0
+     * 
+     * @param string $route
+     * @param array $params
+     * @return array
+     * @throws Exception
+     */
+    protected function get( $route, $params = array() ) {
+        return $this->request( $route, $params, 'GET' );
+    }
+
+    /**
+     * Handle HTTP POST request.
+     * 
+     * @since 4.0.0
+     * 
+     * @param string $route
+     * @param array $params
+     * @return array
+     * @throws Exception
+     */
+    protected function post( $route, $params = array() ) {
+        return $this->request( $route, $params );
+    }
+
+    /**
+     * Handle HTTP request.
+     * 
+     * @since 4.0.0
+     * 
+     * @param string $route
+     * @param array $params
+     * @param string $method
+     * @return array
+     * @throws Exception
+     */
+    protected function request( $route, $params = array(), $method = 'POST' ) {
+        if ( !$this->api_key ) {
+            throw new Exception( __( 'Missing API key', 'billplz-fluentform' ) );
         }
 
-        if (!empty($split_payments)) {
-            $body .= '&' . implode('&', $split_payments);
-            if (!empty($split_header)) {
-                $body .= '&' . $split_header;
-            }
+        $url = $this->get_url( $route );
+        $headers = $this->get_headers();
+
+        $args = array(
+            'headers' => $headers,
+            'body' => $params,
+            'timeout' => 30,
+        );
+
+        if ( $method === 'POST' ) {
+            $args['body'] = wp_json_encode( $params );
         }
 
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['body'] = $body;
-        $wp_remote_data['method'] = 'POST';
+        switch ( $method ) {
+            case 'GET':
+                $response = wp_remote_get( $url, $args );
+                break;
 
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
+            case 'POST':
+                $response = wp_remote_post( $url, $args );
+                break;
 
-        return array($header, $body);
-    }
-
-    public function createOpenCollection($parameter, $optional = array())
-    {
-        $url = $this->url . 'v4/open_collections';
-
-        $body = http_build_query($parameter);
-        if (isset($optional['split_header'])) {
-            $split_header = http_build_query(array('split_header' => $optional['split_header']));
+            default:
+                $args['method'] = $method;
+                $response = wp_remote_request( $url, $args );
         }
 
-        $split_payments = array();
-        if (isset($optional['split_payments'])) {
-            foreach ($optional['split_payments'] as $param) {
-                $split_payments[] = http_build_query($param);
-            }
+        if ( is_wp_error( $response ) ) {
+            throw new Exception( $response->get_error_message() );
         }
 
-        if (!empty($split_payments)) {
-            unset($optional['split_payments']);
-            $body .= '&' . implode('&', $split_payments);
-            if (!empty($split_header)) {
-                unset($optional['split_header']);
-                $body .= '&' . $split_header;
-            }
+        $code = wp_remote_retrieve_response_code( $response );
+        $body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+        return array( $code, $body );
+    }
+
+    /**
+     * Get IPN response.
+     * 
+     * @since 4.0.0
+     * 
+     * @return array
+     * @throws Exception
+     */
+    public function get_ipn_response() {
+        if ( !in_array( $_SERVER['REQUEST_METHOD'], array( 'GET', 'POST' ) ) ) {
+            throw new Exception( __( 'Invalid IPN response', 'billplz-fluentform' ) );
         }
 
-        if (!empty($optional)) {
-            $body .= '&' . http_build_query($optional);
+        if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
+            $response = $this->get_valid_ipn_callback_response();
+        } else {
+            $response = $this->get_valid_ipn_redirect_response();
         }
 
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['body'] = $body;
-        $wp_remote_data['method'] = 'POST';
+        if ( !$response ) {
+            throw new Exception( __( 'Invalid IPN response', 'billplz-fluentform' ) );
+        }
 
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
+        return $response;
     }
 
-    public function getCollection($id)
-    {
-        $url = $this->url . 'v4/collections/' . $id;
+    /**
+     * Get IPN (callback) response.
+     * 
+     * @since 4.0.0
+     * 
+     * @return array
+     * @throws Exception
+     */
+    private function get_valid_ipn_callback_response() {
+        $required_params = $this->get_ipn_callback_params();
+        $optional_params = $this->get_ipn_optional_params();
 
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
+        $allowed_params = array();
+        $params = array_merge( $required_params, $optional_params );
 
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function getOpenCollection($id)
-    {
-        $url = $this->url . 'v4/open_collections/' . $id;
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function getOpenCollectionIndex($parameter = array())
-    {
-        $url = $this->url . 'v4/open_collections?' . http_build_query($parameter);
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function createMPICollection($title)
-    {
-        $url = $this->url . 'v4/mass_payment_instruction_collections';
-
-        $data = array('title' => $title);
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['body'] = http_build_query($data);
-        $wp_remote_data['method'] = 'POST';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function getMPICollection($id)
-    {
-        $url = $this->url . 'v4/mass_payment_instruction_collections/' . $id;
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function createMPI($parameter, $optional = array())
-    {
-        $url = $this->url . 'v4/mass_payment_instructions';
-
-        //if (sizeof($parameter) !== sizeof($optional) && !empty($optional)){
-        //    throw new \Exception('Optional parameter size is not match with Required parameter');
-        //}
-
-        $data = array_merge($parameter, $optional);
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['body'] = http_build_query($data);
-        $wp_remote_data['method'] = 'POST';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function getMPI($id)
-    {
-        $url = $this->url . 'v4/mass_payment_instructions/' . $id;
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['body'] = http_build_query($data);
-        $wp_remote_data['method'] = 'POST';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public static function buildSourceString($data, $prefix = '')
-    {
-        uksort($data, function ($a, $b) {
-            $a_len = strlen($a);
-            $b_len = strlen($b);
-            $result = strncasecmp($a, $b, min($a_len, $b_len));
-            if ($result === 0) {
-                $result = $b_len - $a_len;
-            }
-            return $result;
-        });
-        $processed = [];
-        foreach ($data as $key => $value) {
-            if ($key === 'x_signature') {
+        foreach ( $params as $param ) {
+            // Skip if optional parameters are not passed in the URL
+            if ( in_array( $param, $optional_params ) && !isset( $_POST[ $param ] ) ) {
                 continue;
             }
 
-            if (is_array($value)) {
-                $processed[] = self::buildSourceString($value, $key);
-            } else {
-                $processed[] = $prefix . $key . stripslashes($value);
+            if ( !isset( $_POST[ $param ] ) ) {
+                throw new Exception( sprintf( __( 'Missing IPN parameter - %s', 'billplz-fluentform' ), $param ) );
             }
+
+            $allowed_params[ $param ] = trim( sanitize_text_field( $_POST[ $param ] ) );
         }
-        return implode('|', $processed);
+
+        // Returns only the allowed response data
+        return $allowed_params;
     }
 
-    public static function getXSignature($x_signature_key)
-    {
+    /**
+     * Get IPN (redirect) response.
+     * 
+     * @since 4.0.0
+     * 
+     * @return array
+     * @throws Exception
+     */
+    private function get_valid_ipn_redirect_response() {
+        $required_params = $this->get_ipn_redirect_params();
+        $optional_params = $this->get_ipn_optional_params();
+
+        $allowed_params = array();
+        $params = array_merge( $required_params, $optional_params );
+
+        foreach ( $params as $param ) {
+            // Skip if optional parameters are not passed in the URL
+            if ( in_array( $param, $optional_params ) && !isset( $_GET['billplz'][ $param ] ) ) {
+                continue;
+            }
+
+            if ( !isset( $_GET['billplz'][ $param ] ) ) {
+                throw new Exception( sprintf( __( 'Missing IPN parameter - %s', 'billplz-fluentform' ), $param ) );
+            }
+
+            $param_new_key = $param;
+
+            if ( $param != 'x_signature' ) {
+                $param_new_key = 'billplz' . $param;
+            }
+
+            $allowed_params[ $param_new_key ] = trim( sanitize_text_field( $_GET['billplz'][ $param ] ) );
+        }
+
+        // Returns only the allowed response data
+        return $allowed_params;
+    }
+
+    /**
+     * Required parameters for IPN (callback) response.
+     * 
+     * @since 4.0.0
+     * 
+     * @return array
+     */
+    private function get_ipn_callback_params() {
+
+        return array(
+            'amount',
+            'collection_id',
+            'due_at',
+            'email',
+            'id',
+            'mobile',
+            'name',
+            'paid_amount',
+            'paid_at',
+            'paid',
+            'state',
+            'transaction_id',
+            'transaction_status',
+            'url',
+            'x_signature',
+        );
+
+    }
+
+    /**
+     * Required parameters for IPN (redirect) response.
+     * 
+     * @since 4.0.0
+     * 
+     * @return array
+     */
+    private function get_ipn_redirect_params() {
+
+        return array(
+            'id',
+            'paid_at',
+            'paid',
+            'transaction_id',
+            'transaction_status',
+            'x_signature',
+        );
+
+    }
+
+    /**
+     * Optional parameters for IPN response (both callback and redirect) if Extra Payment Completion Information is enabled.
+     * 
+     * @since 4.0.0
+     * 
+     * @return array
+     */
+    private function get_ipn_optional_params() {
+        return array(
+            'transaction_id',
+            'transaction_status',
+        );
+    }
+
+    /**
+     * Validate the IPN response.
+     * 
+     * @since 4.0.0
+     * 
+     * @return bool
+     * @throws Exception
+     */
+    public function validate_ipn_response( $response, $signature_key ) {
+        if ( !$this->verify_signature( $response, $signature_key ) ) {
+            throw new Exception( __( 'Signature mismatch', 'billplz-fluentform' ) );
+        }
+
+        return true;
+    }
+
+    /**
+     * Verify the signature value in the IPN response.
+     * 
+     * @since 4.0.0
+     * 
+     * @return bool
+     * @throws Exception
+     */
+    private function verify_signature( $response, $signature_key ) {
+        $ipn_signature = isset( $response['x_signature'] ) ? $response['x_signature'] : null;
+
+        if ( !$ipn_signature ) {
+            throw new Exception( __( 'Missing IPN signature', 'billplz-fluentform' ) );
+        }
+
+        unset( $response['x_signature'] );
+
         $data = array();
 
-        if (isset($_GET['billplz']['x_signature'])) {
-            $keys = array('id', 'paid_at', 'paid', 'transaction_id', 'transaction_status', 'x_signature');
-
-            foreach ($keys as $key){
-                if (isset($_GET['billplz'][$key])){
-                    $data['billplz'][$key] = $_GET['billplz'][$key];
-                }
-            } 
-            $type = 'redirect';
-        } elseif (isset($_POST['x_signature'])) {
-            $keys = array('amount', 'collection_id', 'due_at', 'email', 'id', 'mobile', 'name', 'paid_amount', 'transaction_id', 'transaction_status', 'paid_at', 'paid', 'state', 'url', 'x_signature');
-            foreach ($keys as $key){
-                if (isset($_POST[$key])){
-                    $data[$key] = $_POST[$key];
-                }
-            }
-            $type = 'callback';
-        } else {
-            throw new \Exception('X Signature on Payment Completion not activated.');
+        foreach ( $response as $key => $value ) {
+            $data[] = $key . $value;
         }
 
-        $signing = self::buildSourceString($data);
-
-        if ($type == 'redirect'){
-            $data = $data['billplz'];
-        }
-
-        /*
-         * Convert paid status to boolean
-         */
-        $data['paid'] = $data['paid'] === 'true' ? true : false;
-
-        $signed = hash_hmac('sha256', $signing, $x_signature_key);
-
-        if ($data['x_signature'] === $signed) {
-            $data['type'] = $type;
-            return $data;
-        }
-
-        throw new \Exception('X Signature Calculation Mismatch!');
-    }
-    
-    public function deactivateCollection($title, $option = 'deactivate')
-    {
-        $url = $this->url . 'v3/collections/' . $title . '/' . $option;
-
-        $data = array('title' => $title);
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['body'] = http_build_query(array());
-        $wp_remote_data['method'] = 'POST';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function createBill($parameter, $optional = array())
-    {
-        $url = $this->url . 'v3/bills';
-
-        //if (sizeof($parameter) !== sizeof($optional) && !empty($optional)){
-        //    throw new \Exception('Optional parameter size is not match with Required parameter');
-        //}
-
-        $data = array_merge($parameter, $optional);
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['body'] = http_build_query($data);
-        $wp_remote_data['method'] = 'POST';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function getBill($id)
-    {
-        $url = $this->url . 'v3/bills/' . $id;
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function deleteBill($id)
-    {
-        $url = $this->url . 'v3/bills/' . $id;
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['body'] = http_build_query(array());
-        $wp_remote_data['method'] = 'DELETE';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function bankAccountCheck($id)
-    {
-        $url = $this->url . 'v3/check/bank_account_number/' . $id;
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function getPaymentMethodIndex($id)
-    {
-        $url = $this->url . 'v3/collections/' . $id . '/payment_methods';
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function getTransactionIndex($id, $parameter)
-    {
-        $url = $this->url . 'v3/bills/' . $id . '/transactions?' . http_build_query($parameter);
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function updatePaymentMethod($parameter)
-    {
-        if (!isset($parameter['collection_id'])) {
-            throw new \Exception('Collection ID is not passed on updatePaymethodMethod');
-        }
-        $url = $this->url . 'v3/collections/' . $parameter['collection_id'] . '/payment_methods';
-
-        unset($parameter['collection_id']);
-        $body = array();
-        foreach ($parameter['payment_methods'] as $param) {
-            $body[] = http_build_query($param);
-        }
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['body'] = implode('&', $body);
-        $wp_remote_data['method'] = 'PUT';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function getBankAccountIndex($parameter)
-    {
-        if (!is_array($parameter['account_numbers'])) {
-            throw new \Exception('Not valid account numbers.');
-        }
-
-        $parameter = http_build_query($parameter);
-        $parameter = preg_replace('/%5B[0-9]+%5D/simU', '%5B%5D', $parameter);
-
-        $url = $this->url . 'v3/bank_verification_services?' . $parameter;
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function getBankAccount($id)
-    {
-        $url = $this->url . 'v3/bank_verification_services/' . $id;
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function createBankAccount($parameter)
-    {
-        $url = $this->url . 'v3/bank_verification_services';
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['body'] = http_build_query($parameter);
-        $wp_remote_data['method'] = 'POST';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function getFpxBanks()
-    {
-        $url = $this->url . 'v3/fpx_banks';
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function getPaymentGateways()
-    {
-        $url = $this->url . 'v4/payment_gateways';
-
-        $wp_remote_data['sslverify'] = false;
-        $wp_remote_data['headers'] = $this->header;
-        $wp_remote_data['method'] = 'GET';
-
-        $response = \wp_remote_post($url, $wp_remote_data);
-        $header = $response['response']['code'];
-        $body = \wp_remote_retrieve_body($response);
-
-        return array($header, $body);
-    }
-
-    public function closeConnection()
-    {
-    }
-
-    public function toArray($json)
-    {
-        return array($json[0], \json_decode($json[1], true));
+        // Generate a signature using the response data and X-Signature from Billplz dashboard
+        $encoded_data = implode( '|', $data );
+        $generated_signature = hash_hmac( 'sha256', $encoded_data, $signature_key );
+
+        // Compare the generated signature value with the signature value in the IPN response
+        return $ipn_signature == $generated_signature;
     }
 }
