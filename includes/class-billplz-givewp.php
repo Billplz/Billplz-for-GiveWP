@@ -4,6 +4,11 @@ use Give\Framework\PaymentGateways\PaymentGatewayRegister;
 
 if ( !defined( 'ABSPATH' ) ) exit;
 
+/**
+ * Main class.
+ * 
+ * @since 4.0.0 Split from main plugin file.
+ */
 class Billplz_GiveWP {
     /**
      * Class instance.
