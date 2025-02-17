@@ -233,7 +233,6 @@ abstract class Billplz_GiveWP_Client {
      * @return array
      */
     private function get_ipn_callback_params() {
-
         return array(
             'amount',
             'collection_id',
@@ -251,7 +250,6 @@ abstract class Billplz_GiveWP_Client {
             'url',
             'x_signature',
         );
-
     }
 
     /**
@@ -262,7 +260,6 @@ abstract class Billplz_GiveWP_Client {
      * @return array
      */
     private function get_ipn_redirect_params() {
-
         return array(
             'id',
             'paid_at',
@@ -271,7 +268,6 @@ abstract class Billplz_GiveWP_Client {
             'transaction_status',
             'x_signature',
         );
-
     }
 
     /**
