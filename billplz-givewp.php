@@ -21,7 +21,7 @@ if ( !defined( 'BILLPLZ_GIVEWP_FILE' ) ) {
 }
 
 if ( !defined( 'BILLPLZ_GIVEWP_VERSION' ) ) {
-    define( 'BILLPLZ_GIVEWP_VERSION', '1.0.0' );
+    define( 'BILLPLZ_GIVEWP_VERSION', '4.0.0' );
 }
 
 // Plugin core class
