@@ -7,7 +7,6 @@ if ( !defined( 'ABSPATH' ) ) exit;
  * @since 4.0.0
  */
 abstract class Billplz_GiveWP_Client {
-
     const PRODUCTION_API_URL = 'https://www.billplz.com/api/';
     const SANDBOX_API_URL = 'https://www.billplz-sandbox.com/api/';
 
@@ -90,7 +89,7 @@ abstract class Billplz_GiveWP_Client {
      */
     protected function request( $route, $params = array(), $method = 'POST' ) {
         if ( !$this->api_key ) {
-            throw new Exception( __( 'Missing API key', 'billplz-fluentform' ) );
+            throw new Exception( __( 'Missing API key', 'billplz-givewp' ) );
         }
 
         $url = $this->get_url( $route );
@@ -140,7 +139,7 @@ abstract class Billplz_GiveWP_Client {
      */
     public function get_ipn_response() {
         if ( !in_array( $_SERVER['REQUEST_METHOD'], array( 'GET', 'POST' ) ) ) {
-            throw new Exception( __( 'Invalid IPN response', 'billplz-fluentform' ) );
+            throw new Exception( __( 'Invalid IPN response', 'billplz-givewp' ) );
         }
 
         if ( $_SERVER['REQUEST_METHOD'] === 'POST' ) {
@@ -150,7 +149,7 @@ abstract class Billplz_GiveWP_Client {
         }
 
         if ( !$response ) {
-            throw new Exception( __( 'Invalid IPN response', 'billplz-fluentform' ) );
+            throw new Exception( __( 'Invalid IPN response', 'billplz-givewp' ) );
         }
 
         return $response;
@@ -178,7 +177,7 @@ abstract class Billplz_GiveWP_Client {
             }
 
             if ( !isset( $_POST[ $param ] ) ) {
-                throw new Exception( sprintf( __( 'Missing IPN parameter - %s', 'billplz-fluentform' ), $param ) );
+                throw new Exception( sprintf( __( 'Missing IPN parameter - %s', 'billplz-givewp' ), $param ) );
             }
 
             $allowed_params[ $param ] = trim( sanitize_text_field( $_POST[ $param ] ) );
@@ -210,7 +209,7 @@ abstract class Billplz_GiveWP_Client {
             }
 
             if ( !isset( $_GET['billplz'][ $param ] ) ) {
-                throw new Exception( sprintf( __( 'Missing IPN parameter - %s', 'billplz-fluentform' ), $param ) );
+                throw new Exception( sprintf( __( 'Missing IPN parameter - %s', 'billplz-givewp' ), $param ) );
             }
 
             $param_new_key = $param;
@@ -299,7 +298,7 @@ abstract class Billplz_GiveWP_Client {
      */
     public function validate_ipn_response( $response, $signature_key ) {
         if ( !$this->verify_signature( $response, $signature_key ) ) {
-            throw new Exception( __( 'Signature mismatch', 'billplz-fluentform' ) );
+            throw new Exception( __( 'Signature mismatch', 'billplz-givewp' ) );
         }
 
         return true;
@@ -317,7 +316,7 @@ abstract class Billplz_GiveWP_Client {
         $ipn_signature = isset( $response['x_signature'] ) ? $response['x_signature'] : null;
 
         if ( !$ipn_signature ) {
-            throw new Exception( __( 'Missing IPN signature', 'billplz-fluentform' ) );
+            throw new Exception( __( 'Missing IPN signature', 'billplz-givewp' ) );
         }
 
         unset( $response['x_signature'] );
