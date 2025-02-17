@@ -58,8 +58,8 @@ class Billplz_GiveWP {
         require_once BILLPLZ_GIVEWP_PATH . 'includes/abstracts/abstract-billplz-givewp-client.php';
         require_once BILLPLZ_GIVEWP_PATH . 'includes/class-billplz-givewp-api.php';
 
-        // Plugin activation
-        require_once BILLPLZ_GIVEWP_PATH . 'includes/admin/class-billplz-givewp-activation.php';
+        // Admin
+        require_once BILLPLZ_GIVEWP_PATH . 'includes/admin/class-billplz-givewp-admin.php';
 
         // Plugin settings
         require_once BILLPLZ_GIVEWP_PATH . 'includes/admin/class-billplz-givewp-settings-metabox.php';
