@@ -35,6 +35,7 @@ Manual installation method requires downloading the Billplz for GiveWP plugin an
 
 = 4.0.0 - 2025-02-21 =
 - Added: Support for Visual Donation Form Builder
+- Added: Link the bill ID in the transaction details section
 - Modified: Removed `give_billplz_label` filter hook; use GiveWP filter hook to modify the gateway checkout label: `give_gateway_checkout_label`
 
 = 3.4.0 =

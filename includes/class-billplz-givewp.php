@@ -1,5 +1,6 @@
 <?php
 
+use Give\Donations\Models\Donation;
 use Give\Framework\PaymentGateways\PaymentGatewayRegister;
 
 if ( !defined( 'ABSPATH' ) ) exit;
@@ -79,6 +80,7 @@ class Billplz_GiveWP {
         add_action( 'give_enabled_payment_gateways', array( $this, 'filter_gateway' ), 10, 2 );
         add_action( 'give_billplz_cc_form', array( $this, 'add_billing_form' ) );
         add_filter( 'give_payment_confirm_billplz', array( $this, 'success_page_content' ) );
+        add_filter( 'give_payment_details_transaction_id-billplz', array( $this, 'link_transaction_id' ), 10, 2 );
     }
 
     /**
@@ -89,7 +91,7 @@ class Billplz_GiveWP {
     public function register_gateway( PaymentGatewayRegister $registrar ) {
         include_once BILLPLZ_GIVEWP_PATH . 'includes/class-billplz-givewp-gateway.php';
 
-        $registrar->registerGateway(Billplz_GiveWP_Gateway::class);
+        $registrar->registerGateway( Billplz_GiveWP_Gateway::class );
     }
 
     /**
@@ -153,6 +155,26 @@ class Billplz_GiveWP {
         }
 
         return $content;
+    }
+
+    /**
+     * Link the bill ID in the transaction details section.
+     * 
+     * @since 4.0.0
+     * 
+     * @param string $transaction_id
+     * @param string $payment_id
+     */
+    public function link_transaction_id( $transaction_id, $payment_id ) {
+        $donation = Donation::find( $payment_id );
+
+        if ( $donation->mode->isLive() ) {
+            $bill_url = 'https://www.billplz.com/bills/' . $transaction_id;
+        } else {
+            $bill_url = 'https://www.billplz-sandbox.com/bills/' . $transaction_id;
+        }
+
+        return '<a href="' . esc_url( $bill_url ) . '" target="_blank">' . $transaction_id . '</a>';
     }
 }
 
