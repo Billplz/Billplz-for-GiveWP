@@ -54,6 +54,9 @@ class Billplz_GiveWP {
      * @since 4.0.0
      */
     private function includes() {
+        // Functions
+        require_once BILLPLZ_GIVEWP_PATH . 'includes/functions.php';
+
         // API
         require_once BILLPLZ_GIVEWP_PATH . 'includes/abstracts/abstract-billplz-givewp-client.php';
         require_once BILLPLZ_GIVEWP_PATH . 'includes/class-billplz-givewp-api.php';
