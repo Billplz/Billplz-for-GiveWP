@@ -102,7 +102,7 @@ class Billplz_GiveWP {
      */
     public function filter_gateway( $gateways, $form_id ) {
         // Skip gateway filtering on create Give form donation page
-        if ( false === strpos( $_SERVER['REQUEST_URI'], '/wp-admin/post-new.php?post_type=give_forms' ) ) {
+        if ( false !== strpos( $_SERVER['REQUEST_URI'], '/wp-admin/post-new.php?post_type=give_forms' ) ) {
             return $gateways;
         }
 
