@@ -1,5 +1,5 @@
 {
     "intelephense.environment.includePaths": [
-        "../give" // GiveWP plugin folder - wp-content/plugins/give
-    ],
+        "../give"
+    ]
 }
