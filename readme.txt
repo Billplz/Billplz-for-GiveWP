@@ -33,26 +33,30 @@ Manual installation method requires downloading the Billplz for GiveWP plugin an
 
 == Changelog ==
 
+= 4.0.0 - 2025-02-21 =
+- Added: Support for Visual Donation Form Builder
+- Modified: Removed `give_billplz_label` filter hook; use GiveWP filter hook to modify the gateway checkout label: `give_gateway_checkout_label`
+
 = 3.4.0 =
-* NEW: Support for Enable Extra Payment Completion Information
+- Added: Support for Enable Extra Payment Completion Information
 
 = 3.3.0 = 
-* Add new filter for modifying required parameter during bill creation.
-* Fix issue on redirect_url
+* Added: New filter for modifying required parameter during bill creation.
+* Fixed: Issue on `redirect_url`
 
 = 3.2.1 =
-* NEW : Add filter for Reference 1 and 2
+- Added: Filter hook for Reference 1 and 2
 
 = 3.2.0 =
-* IMPROVED: Fix issue when having multiple donation attempt at the same time.
-* IMPROVED: Billplz now respect to Give Test configuration.
+- Fixed: Resolve issue when having multiple donation attempt at the same time
+* Modified: Billplz now respect to Give Test configuration
 
 = 3.1.0 =
-* NEW: Support for latest Give plugin version 2.5.x.
-* IMPROVED: Support for PHP 5.6.
+- Added: Support for latest Give plugin version 2.5.x
+* Fixed: Support for PHP 5.6
 
 = 3.0.2 =
-* NEW: Added ability to set different Billplz account for each forms.
+- Added: Added ability to set different Billplz account for each forms
 
 = 1.0.0 =
-* Initial release.
+- Initial plugin release
