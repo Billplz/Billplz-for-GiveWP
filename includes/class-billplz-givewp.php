@@ -95,7 +95,7 @@ class Billplz_GiveWP {
     }
 
     /**
-     * Remove Billplz from the gateway list if it is disabled.
+     * Remove Billplz from the gateway list if it is disabled or currency is not supported.
      * 
      * @since 3.0.2
      * @since 4.0.0 Renamed from `give_filter_billplz_gateway` and moved from gateway class
@@ -106,8 +106,13 @@ class Billplz_GiveWP {
             return $gateways;
         }
 
-        if ( $form_id && !give_is_setting_enabled( give_get_meta( $form_id, 'billplz_customize_billplz_donations', true, 'global' ), [ 'enabled', 'global' ] ) ) {
-            unset( $gateways['billplz'] );
+        if ( $form_id ) {
+            $is_supported_currency = give_get_currency( $form_id ) === 'MYR';
+            $is_enabled = give_is_setting_enabled( give_get_meta( $form_id, 'billplz_customize_billplz_donations', true, 'global' ), [ 'enabled', 'global' ] );
+
+            if ( !$is_supported_currency || !$is_enabled ) {
+                unset( $gateways['billplz'] );
+            }
         }
 
         return $gateways;
