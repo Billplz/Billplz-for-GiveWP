@@ -77,6 +77,7 @@ class Billplz_GiveWP {
     private function init_hooks() {
         add_action( 'givewp_register_payment_gateway', array( $this, 'register_gateway' ) );
         add_action( 'give_enabled_payment_gateways', array( $this, 'filter_gateway' ), 10, 2 );
+        add_action( 'give_billplz_cc_form', array( $this, 'add_billing_form' ) );
     }
 
     /**
@@ -107,6 +108,26 @@ class Billplz_GiveWP {
         }
 
         return $gateways;
+    }
+
+    /**
+     * Display billing form if it is enabled.
+     * 
+     * @since 3.0.2
+     * @since 4.0.0 Renamed from `give_billplz_cc_form` and moved from gateway class
+     */
+    public function add_billing_form( $form_id ) {
+        $custom_donation_settings = give_get_meta( $form_id, 'billplz_customize_billplz_donations', true, 'global' );
+
+        if ( give_is_setting_enabled( $custom_donation_settings, 'enabled' ) ) {
+            $is_collect_billing = give_get_meta( $form_id, 'billplz_collect_billing', true );
+        } else {
+            $is_collect_billing = give_get_option( 'billplz_collect_billing' );
+        }
+
+        if ( $is_collect_billing === 'enabled' ) {
+            give_default_cc_address_fields( $form_id );
+        }
     }
 }
 
