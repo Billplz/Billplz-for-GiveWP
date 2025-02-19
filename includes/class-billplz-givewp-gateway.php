@@ -219,9 +219,9 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
      * @return true
      */
     private function isCustomDonationEnabled( Donation $donation ) {
-        $custom_donation = give_get_meta( $donation->formId, 'billplz_customize_billplz_donations', true, 'global' );
+        $custom_donation_settings = give_get_meta( $donation->formId, 'billplz_customize_billplz_donations', true, 'global' );
 
-        return give_is_setting_enabled( $custom_donation, 'enabled' );
+        return give_is_setting_enabled( $custom_donation_settings, 'enabled' );
     }
 
     /**

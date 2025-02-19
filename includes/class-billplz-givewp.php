@@ -91,18 +91,18 @@ class Billplz_GiveWP {
     }
 
     /**
-     * Remove Billplz from gateway list if it is disabled.
+     * Remove Billplz from the gateway list if it is disabled.
      * 
-     * @since 3.0.0
+     * @since 3.0.2
      * @since 4.0.0 Renamed from `give_filter_billplz_gateway` and moved from gateway class
      */
     public function filter_gateway( $gateways, $form_id ) {
-        if (
-            // Show Billplz payment gateway if enable for new donation form
-            ( false === strpos( $_SERVER['REQUEST_URI'], '/wp-admin/post-new.php?post_type=give_forms' ) )
-            && $form_id
-            && !give_is_setting_enabled( give_get_meta( $form_id, 'billplz_customize_billplz_donations', true, 'global' ), [ 'enabled', 'global' ] )
-        ) {
+        // Skip gateway filtering on create Give form donation page
+        if ( false === strpos( $_SERVER['REQUEST_URI'], '/wp-admin/post-new.php?post_type=give_forms' ) ) {
+            return $gateways;
+        }
+
+        if ( $form_id && !give_is_setting_enabled( give_get_meta( $form_id, 'billplz_customize_billplz_donations', true, 'global' ), [ 'enabled', 'global' ] ) ) {
             unset( $gateways['billplz'] );
         }
 
