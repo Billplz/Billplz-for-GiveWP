@@ -78,6 +78,7 @@ class Billplz_GiveWP {
         add_action( 'givewp_register_payment_gateway', array( $this, 'register_gateway' ) );
         add_action( 'give_enabled_payment_gateways', array( $this, 'filter_gateway' ), 10, 2 );
         add_action( 'give_billplz_cc_form', array( $this, 'add_billing_form' ) );
+        add_filter( 'give_payment_confirm_billplz', array( $this, 'success_page_content' ) );
     }
 
     /**
@@ -128,6 +129,30 @@ class Billplz_GiveWP {
         if ( $is_collect_billing === 'enabled' ) {
             give_default_cc_address_fields( $form_id );
         }
+    }
+
+    /**
+     * Payment success page.
+     * 
+     * @since 3.2.0
+     * @since 4.0.0 Renamed from `give_billplz_success_page_content` and moved from gateway class
+     */
+    public function success_page_content() {
+        $session = give_get_purchase_session();
+        $payment_id = give_get_donation_id_by_key( $session['purchase_key'] );
+    
+        $payment = get_post( $payment_id );
+
+        // Payment is still pending, so show processing indicator to fix the race condition.
+        if ( $payment && $payment->post_status === 'pending' ) {
+            ob_start();
+    
+            give_get_template_part( 'payment', 'processing' );
+    
+            $content = ob_get_clean();
+        }
+
+        return $content;
     }
 }
 
