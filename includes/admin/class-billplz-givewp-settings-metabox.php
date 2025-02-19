@@ -73,7 +73,7 @@ class Billplz_GiveWP_Metabox_Settings {
             array(
                 'name' => __( 'Billplz', 'billplz-givewp' ),
                 'desc' => __( 'Do you want to customize the donation instructions for this form?', 'billplz-givewp' ),
-                'id' => 'billplz_customize_donations',
+                'id' => 'billplz_customize_billplz_donations',
                 'type' => 'radio_inline',
                 'default' => 'global',
                 'options' => apply_filters( 'give_forms_content_options_select', array(

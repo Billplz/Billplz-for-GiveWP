@@ -1,12 +1,12 @@
 jQuery( function( $ ) {
   init_billplz_meta();
 
-  $( ".billplz_customize_donations_field input:radio" ).on( "change", function() {
+  $( ".billplz_customize_billplz_donations_field input:radio" ).on( "change", function() {
       init_billplz_meta();
   } );
 
   function init_billplz_meta() {
-      if ( "enabled" === $( ".billplz_customize_donations_field input:radio:checked" ).val() ) {
+      if ( "enabled" === $( ".billplz_customize_billplz_donations_field input:radio:checked" ).val() ) {
           $( ".billplz_api_key_field" ).show();
           $( ".billplz_collection_id_field" ).show();
           $( ".billplz_x_signature_key_field" ).show();
