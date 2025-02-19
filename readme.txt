@@ -8,11 +8,11 @@ Requires PHP: 7.0
 License: GPLv3 or later License
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Billplz payment gateway integration with GiveWP.
+Billplz payment integration for GiveWP.
 
 == Description ==
 
-Billplz payment gateway integration with GiveWP.
+Billplz payment integration for GiveWP.
 
 == Installation ==
 

@@ -29,6 +29,6 @@
         },
     };
 
-    // Register the gateway with GiveWP
+    // Register the gateway
     window.givewp.gateways.register(BillplzGiveWPGateway);
 })();
