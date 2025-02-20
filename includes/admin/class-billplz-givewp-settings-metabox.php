@@ -41,7 +41,7 @@ class Billplz_GiveWP_Metabox_Settings {
             $settings[ 'billplz_options' ] = apply_filters( 'give_forms_billplz_options', array(
                 'id' => 'billplz_options',
                 'title' => __( 'Billplz', 'billplz-givewp' ),
-                'icon-html' => '<span class="give-icon give-icon-purse"></span>',
+                'icon-html' => '<i class="fas fa-wallet"></i>',
                 'fields' => apply_filters( 'give_forms_billplz_metabox_fields', array() ),
             ) );
         }
