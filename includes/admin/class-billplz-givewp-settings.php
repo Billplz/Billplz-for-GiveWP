@@ -4,7 +4,6 @@
  * Gateway settings class.
  * 
  * @since 3.0.0
- * @since 4.0.0 Renamed from `Give_Billplz_Settings`.
  */
 class Billplz_GiveWP_Settings {
     /**

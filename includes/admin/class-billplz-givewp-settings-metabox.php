@@ -4,7 +4,6 @@
  * Donation metabox settings class.
  * 
  * @since 3.0.1
- * @since 4.0.0 Renamed from `Give_Billplz_Settings_Metabox`.
  */
 class Billplz_GiveWP_Metabox_Settings {
     /**
@@ -18,7 +17,6 @@ class Billplz_GiveWP_Metabox_Settings {
 
     /**
      * @since 3.0.02
-     * @since 4.0.0 Renamed from `enqueue_js`.
      * 
      * @param string $hook
      */
@@ -32,7 +30,6 @@ class Billplz_GiveWP_Metabox_Settings {
      * Register metabox settings.
      * 
      * @since 3.0.2
-     * @since 4.0.0 Renamed from `add_billplz_setting_tab`.
      * 
      * @param array $settings
      */
@@ -53,7 +50,6 @@ class Billplz_GiveWP_Metabox_Settings {
      * Register metabox settings fields.
      * 
      * @since 3.0.2
-     * @since 4.0.0 Renamed from `add_billplz_setting_tab`.
      * 
      * @param array $settings
      */

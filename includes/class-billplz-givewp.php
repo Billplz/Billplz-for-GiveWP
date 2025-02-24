@@ -98,7 +98,6 @@ class Billplz_GiveWP {
      * Remove Billplz from the gateway list if it is disabled or currency is not supported.
      * 
      * @since 3.0.2
-     * @since 4.0.0 Renamed from `give_filter_billplz_gateway` and moved from gateway class
      */
     public function filter_gateway( $gateways, $form_id ) {
         // Skip gateway filtering on create Give form donation page
@@ -122,7 +121,6 @@ class Billplz_GiveWP {
      * Display billing form if it is enabled.
      * 
      * @since 3.0.2
-     * @since 4.0.0 Renamed from `give_billplz_cc_form` and moved from gateway class
      */
     public function add_billing_form( $form_id ) {
         $custom_donation_settings = give_get_meta( $form_id, 'billplz_customize_billplz_donations', true, 'global' );
@@ -142,7 +140,6 @@ class Billplz_GiveWP {
      * Payment success page.
      * 
      * @since 3.2.0
-     * @since 4.0.0 Renamed from `give_billplz_success_page_content` and moved from gateway class
      */
     public function success_page_content() {
         $session = give_get_purchase_session();
