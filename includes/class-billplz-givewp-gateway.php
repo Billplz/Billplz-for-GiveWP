@@ -157,8 +157,6 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
                 throw new Exception( __( 'Bill description is required.', 'billplz-givewp' ) );
             }
 
-            $callback_url = 'https://eopohcbsklfwbv6.m.pipedream.net';
-
             $params = array(
                 'collection_id' => $collection_id,
                 'email' => $donation->email,
