@@ -105,6 +105,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
 
             if ( $is_custom_donation_enabled ) {
                 $api_key = give_get_meta( $donation->formId, 'billplz_api_key', true );
+                $xsignature_key = give_get_meta( $donation->formId, 'billplz_x_signature_key', true );
                 $collection_id = give_get_meta( $donation->formId, 'billplz_collection_id', true );
                 $description = give_get_meta( $donation->formId, 'billplz_description', true );
                 $reference_1_label = give_get_meta( $donation->formId, 'billplz_reference_1_label', true );
@@ -113,6 +114,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
                 $reference_2_value = give_get_meta( $donation->formId, 'billplz_reference_2', true );
             } else {
                 $api_key = give_get_option( 'billplz_api_key' );
+                $xsignature_key = give_get_option( 'billplz_x_signature_key' );
                 $collection_id = give_get_option( 'billplz_collection_id' );
                 $description = give_get_option( 'billplz_description' );
                 $reference_1_label = give_get_option( 'billplz_reference_1_label' );
@@ -172,7 +174,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
                 'reference_2' => $reference_2_value,
             );
             
-            $billplz = new Billplz_GiveWP_API( $api_key, $sandbox );
+            $billplz = new Billplz_GiveWP_API( $api_key, $xsignature_key, $sandbox );
             list( $code, $response ) = $billplz->create_bill( $params );
 
             if ( $code === 200 ) {
@@ -330,10 +332,10 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
             throw new Exception( __( 'Missing X-Signature key.', 'billplz-givewp' ) );
         }
 
-        $billplz = new Billplz_GiveWP_API( $api_key, $sandbox );
+        $billplz = new Billplz_GiveWP_API( $api_key, $xsignature_key, $sandbox );
         $response = $billplz->get_ipn_response();
 
-        if ( $billplz->validate_ipn_response( $response, $xsignature_key ) ) {
+        if ( $billplz->validate_ipn_response( $response ) ) {
             return $response;
         }
 

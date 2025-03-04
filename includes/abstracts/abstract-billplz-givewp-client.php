@@ -11,7 +11,23 @@ abstract class Billplz_GiveWP_Client {
     const SANDBOX_API_URL = 'https://www.billplz-sandbox.com/api/';
 
     protected $api_key;
+    protected $xsignature_key;
     protected $sandbox = true;
+
+    /**
+     * Constructor.
+     * 
+     * @since 4.0.0
+     * 
+     * @param string $api_key
+     * @param string $xsignature_key
+     * @param bool $sandbox
+     */
+    public function __construct( $api_key, $xsignature_key, bool $sandbox = true ) {
+        $this->api_key = $api_key;
+        $this->xsignature_key = $xsignature_key;
+        $this->sandbox = $sandbox;
+    }
 
     /**
      * HTTP request URL.
@@ -292,8 +308,8 @@ abstract class Billplz_GiveWP_Client {
      * @return bool
      * @throws Exception
      */
-    public function validate_ipn_response( $response, $signature_key ) {
-        if ( !$this->verify_signature( $response, $signature_key ) ) {
+    public function validate_ipn_response( $response ) {
+        if ( !$this->verify_signature( $response ) ) {
             throw new Exception( __( 'Signature mismatch', 'billplz-givewp' ) );
         }
 
@@ -308,7 +324,7 @@ abstract class Billplz_GiveWP_Client {
      * @return bool
      * @throws Exception
      */
-    private function verify_signature( $response, $signature_key ) {
+    private function verify_signature( $response ) {
         $ipn_signature = isset( $response['x_signature'] ) ? $response['x_signature'] : null;
 
         if ( !$ipn_signature ) {
@@ -325,7 +341,7 @@ abstract class Billplz_GiveWP_Client {
 
         // Generate a signature using the response data and X-Signature from Billplz dashboard
         $encoded_data = implode( '|', $data );
-        $generated_signature = hash_hmac( 'sha256', $encoded_data, $signature_key );
+        $generated_signature = hash_hmac( 'sha256', $encoded_data, $this->xsignature_key );
 
         // Compare the generated signature value with the signature value in the IPN response
         return $ipn_signature == $generated_signature;
