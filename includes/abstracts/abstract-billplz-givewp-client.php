@@ -35,6 +35,7 @@ abstract class Billplz_GiveWP_Client {
      * @since 4.0.0
      * 
      * @param string|null $route
+     * @return string
      */
     private function get_url( $route = null ) {
         if ( $this->sandbox ) {
@@ -53,7 +54,7 @@ abstract class Billplz_GiveWP_Client {
      */
     private function get_headers() {
         $headers = array(
-            'Accept'       => 'application/json',
+            'Accept' => 'application/json',
             'Content-Type' => 'application/json',
         );
 
@@ -71,8 +72,8 @@ abstract class Billplz_GiveWP_Client {
      * 
      * @param string $route
      * @param array $params
-     * @return array
-     * @throws Exception
+     * @return array<integer, mixed>
+     * @throws \Exception
      */
     protected function get( $route, $params = array() ) {
         return $this->request( $route, $params, 'GET' );
@@ -85,8 +86,8 @@ abstract class Billplz_GiveWP_Client {
      * 
      * @param string $route
      * @param array $params
-     * @return array
-     * @throws Exception
+     * @return array<integer, mixed>
+     * @throws \Exception
      */
     protected function post( $route, $params = array() ) {
         return $this->request( $route, $params );
@@ -100,8 +101,8 @@ abstract class Billplz_GiveWP_Client {
      * @param string $route
      * @param array $params
      * @param string $method
-     * @return array
-     * @throws Exception
+     * @return array<integer, mixed>
+     * @throws \Exception
      */
     protected function request( $route, $params = array(), $method = 'POST' ) {
         if ( !$this->api_key ) {
@@ -151,7 +152,7 @@ abstract class Billplz_GiveWP_Client {
      * @since 4.0.0
      * 
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
     public function get_ipn_response() {
         if ( !in_array( $_SERVER['REQUEST_METHOD'], array( 'GET', 'POST' ) ) ) {
@@ -177,7 +178,7 @@ abstract class Billplz_GiveWP_Client {
      * @since 4.0.0
      * 
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
     private function get_valid_ipn_callback_response() {
         $required_params = $this->get_ipn_callback_params();
@@ -209,7 +210,7 @@ abstract class Billplz_GiveWP_Client {
      * @since 4.0.0
      * 
      * @return array
-     * @throws Exception
+     * @throws \Exception
      */
     private function get_valid_ipn_redirect_response() {
         $required_params = $this->get_ipn_redirect_params();
@@ -306,7 +307,7 @@ abstract class Billplz_GiveWP_Client {
      * @since 4.0.0
      * 
      * @return bool
-     * @throws Exception
+     * @throws \Exception
      */
     public function validate_ipn_response( $response ) {
         if ( !$this->verify_signature( $response ) ) {
@@ -322,7 +323,7 @@ abstract class Billplz_GiveWP_Client {
      * @since 4.0.0
      * 
      * @return bool
-     * @throws Exception
+     * @throws \Exception
      */
     private function verify_signature( $response ) {
         $ipn_signature = isset( $response['x_signature'] ) ? $response['x_signature'] : null;
