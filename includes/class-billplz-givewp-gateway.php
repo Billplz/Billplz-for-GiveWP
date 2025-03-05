@@ -137,6 +137,8 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
             $redirect_url = $this->generateSecureGatewayRouteUrl( 'handleSuccessPaymentReturn', $donation->id, array(
                 'donation-id' => $donation->id,
                 'give-return-url' => $gatewayData['successUrl'],
+                'give-failed-url' => $gatewayData['failedUrl'],
+                'give-cancel-url' => $gatewayData['cancelUrl'],
             ) );
 
             $callback_url = $this->generateGatewayRouteUrl( 'handleIpnNotification', array(
@@ -264,6 +266,14 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
             PaymentGatewayLog::error( 'Billplz for GiveWP - IPN (redirect) failed.', [
                 'error' => $e->getMessage(),
             ] );
+        }
+
+        if ( $donation->status->isFailed() ) {
+            return new RedirectResponse( esc_url_raw( $data['give-failed-url'] ) );
+        }
+
+        if ( $donation->status->isCancelled() ) {
+            return new RedirectResponse( esc_url_raw( $data['give-cancel-url'] ) );
         }
 
         return new RedirectResponse( esc_url_raw( $data['give-return-url'] ) );
