@@ -105,11 +105,13 @@ class Billplz_GiveWP {
             return $gateways;
         }
 
-        $is_supported_currency = give_get_currency( $form_id ) === 'MYR'; // returns global or specific form currency
-        $is_enabled = $form_id ? give_is_setting_enabled( give_get_meta( $form_id, 'billplz_customize_billplz_donations', true, 'global' ), [ 'enabled', 'global' ] ) : false;
+        if ( $form_id ) {
+            $is_supported_currency = give_get_currency( $form_id ) === 'MYR';
+            $is_enabled = give_is_setting_enabled( give_get_meta( $form_id, 'billplz_customize_billplz_donations', true, 'global' ), [ 'enabled', 'global' ] );
 
-        if ( !$is_supported_currency || !$is_enabled ) {
-            unset( $gateways['billplz'] );
+            if ( !$is_supported_currency || !$is_enabled ) {
+                unset( $gateways['billplz'] );
+            }
         }
 
         return $gateways;
