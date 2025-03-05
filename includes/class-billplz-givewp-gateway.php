@@ -364,7 +364,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
                     $payment_status = __( 'Failed', 'billplz-givewp' );
                     break;
             }
-        } elseif ( (bool) $response['paid'] ) {
+        } elseif ( $response['paid'] == 'true' ) {
             $donation_status = DonationStatus::COMPLETE();
             $payment_status = __( 'Paid', 'billplz-givewp' );
         }
