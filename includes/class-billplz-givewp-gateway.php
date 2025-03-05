@@ -227,12 +227,6 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
     }
 
     /**
-     * Update donation payment status.
-     */
-    private function updatePaymentStatus( array $ipnResponse ) {
-    }
-
-    /**
      * Handle payment redirect after successful payment.
      *
      * @since 4.0.0
