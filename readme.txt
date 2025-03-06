@@ -33,7 +33,7 @@ Manual installation method requires downloading the Billplz for GiveWP plugin an
 
 == Changelog ==
 
-= 4.0.0 - 2025-02-21 =
+= 4.0.0 - 2025-03-06 =
 - Added: Support for Visual Donation Form Builder
 - Added: Link the bill ID in the transaction details section
 - Fixed: Disable gateway if currency is not supported
