@@ -12,6 +12,8 @@ use Give\Framework\PaymentGateways\DonationSummary;
 use Give\Framework\PaymentGateways\Exceptions\PaymentGatewayException;
 use Give\Framework\PaymentGateways\Log\PaymentGatewayLog;
 use Give\Framework\PaymentGateways\PaymentGateway;
+use Give\Helpers\Form\Utils;
+use Give\Session\SessionDonation\DonationAccessor;
 
 if ( !defined( 'ABSPATH' ) ) exit;
 
@@ -143,7 +145,6 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
             $redirect_url = $this->generateSecureGatewayRouteUrl( 'handleSuccessPaymentReturn', $donation->id, array(
                 'donation-id' => $donation->id,
                 'give-return-url' => $gatewayData['successUrl'],
-                'give-failed-url' => $gatewayData['failedUrl'],
                 'give-cancel-url' => $gatewayData['cancelUrl'],
             ) );
 
@@ -269,7 +270,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
         }
 
         if ( $donation->status->isFailed() ) {
-            return new RedirectResponse( esc_url_raw( $data['give-failed-url'] ) );
+            return new RedirectResponse( esc_url_raw( $this->getDonationFailedUrl( $donation ) ) );
         }
 
         if ( $donation->status->isCancelled() ) {
@@ -277,6 +278,21 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
         }
 
         return new RedirectResponse( esc_url_raw( $data['give-return-url'] ) );
+    }
+
+    /**
+     * Generate donation failed page URL.
+     * 
+     * @since 4.0.0
+     */
+    private function getDonationFailedUrl( Donation $donation ) {
+        $formId = give_get_payment_form_id( $donation->id );
+        $isEmbedDonationForm = !Utils::isLegacyForm( $formId );
+        $donationFormPageUrl = ( new DonationAccessor() )->get()->formEntry->currentUrl ?: get_permalink($formId);
+
+        return $isEmbedDonationForm
+            ? Utils::createFailedPageURL( $donationFormPageUrl )
+            : give_get_failed_transaction_uri();
     }
 
     /**
