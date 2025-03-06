@@ -98,6 +98,12 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
     public function createPayment( Donation $donation, $gatewayData ): RedirectOffsite
     {
         try {
+            $is_supported_currency = give_get_currency( $donation->formId ) === 'MYR';
+
+            if ( !$is_supported_currency ) {
+                throw new Exception(__('Currency not supported by selected payment option.'));
+            }
+
             $sandbox = give_is_test_mode();
             $donorName = billplz_givewp_get_donor_fullname( $donation );
 
