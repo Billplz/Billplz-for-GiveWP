@@ -345,6 +345,6 @@ abstract class Billplz_GiveWP_Client {
         $generated_signature = hash_hmac( 'sha256', $encoded_data, $this->xsignature_key );
 
         // Compare the generated signature value with the signature value in the IPN response
-        return $ipn_signature == $generated_signature;
+        return $ipn_signature === $generated_signature;
     }
 }
