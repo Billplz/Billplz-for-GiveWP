@@ -2,10 +2,10 @@
 Contributors: billplz, yiedpozi, wanzulnet
 Tags: give, donation, billplz, payment
 Requires at least: 4.6
-Tested up to: 6.2
+Tested up to: 6.7
 Stable tag: 4.0.0
 Requires PHP: 7.0
-License: GPLv3 or later License
+License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
 Billplz payment integration for GiveWP.
