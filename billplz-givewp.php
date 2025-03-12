@@ -9,7 +9,7 @@
  * Author: Billplz Sdn Bhd
  * Author URI: https://www.billplz.com/
  * Text Domain: billplz-givewp
- * License: GNU General Public License v3.0
+ * License: GPLv3
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  * Requires Plugins: give
  */
