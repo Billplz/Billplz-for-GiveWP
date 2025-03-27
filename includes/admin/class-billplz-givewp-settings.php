@@ -1,4 +1,5 @@
 <?php
+if ( !defined( 'ABSPATH' ) ) exit;
 
 /**
  * Gateway settings class.
