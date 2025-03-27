@@ -206,8 +206,6 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
                 }
             }
         } catch ( Exception $e ) {
-            $errorMessage = $e->getMessage();
-
             $donation->status = DonationStatus::FAILED();
             $donation->save();
 
@@ -216,11 +214,11 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
                 'content' => sprintf(
                     /* translators: %s: Donation reason */
                     esc_html__( 'Donation failed. Reason: %s', 'billplz-for-givewp' ),
-                    $errorMessage
+                    esc_html( $e->getMessage() )
                 ),
             ]);
 
-            throw new PaymentGatewayException( $errorMessage );
+            throw new PaymentGatewayException( esc_html( $e->getMessage() ) );
         }
     }
 
