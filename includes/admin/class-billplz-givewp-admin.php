@@ -25,7 +25,7 @@ class Billplz_GiveWP_Admin {
      */
     public function register_settings_link( $links ) {
         $url = admin_url( 'edit.php?post_type=give_forms&page=give-settings&tab=gateways&section=billplz' );
-        $label = esc_html__( 'Settings', 'billplz-givewp' );
+        $label = esc_html__( 'Settings', 'billplz-for-givewp' );
 
         $settings_link = '<a href="' . esc_url( $url ) . '">' . $label . '</a>';
         array_unshift( $links, $settings_link );

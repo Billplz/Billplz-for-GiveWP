@@ -51,7 +51,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
      */
     public function getName(): string
     {
-        return __( 'Billplz', 'billplz-givewp' );
+        return __( 'Billplz', 'billplz-for-givewp' );
     }
 
     /**
@@ -59,7 +59,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
      */
     public function getPaymentMethodLabel(): string
     {
-        return __( 'Billplz', 'billplz-givewp' );
+        return __( 'Billplz', 'billplz-for-givewp' );
     }
 
     /**
@@ -69,7 +69,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
      */
     public function enqueueScript( int $formId )
     {
-        wp_enqueue_script( 'billplz-givewp', BILLPLZ_GIVEWP_URL . 'assets/js/gateway.js', array( 'react', 'wp-element' ), BILLPLZ_GIVEWP_VERSION, true );
+        wp_enqueue_script( 'billplz-for-givewp', BILLPLZ_GIVEWP_URL . 'assets/js/gateway.js', array( 'react', 'wp-element' ), BILLPLZ_GIVEWP_VERSION, true );
     }
 
     /**
@@ -80,7 +80,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
     public function formSettings(int $formId): array
     {
         return [
-            'message' => __( 'You will be redirected to Billplz.com to complete the donation!', 'billplz-givewp' ),
+            'message' => __( 'You will be redirected to Billplz.com to complete the donation!', 'billplz-for-givewp' ),
         ];
     }
 
@@ -90,7 +90,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
     public function getLegacyFormFieldMarkup( int $formId, array $args ): string
     {
         return "<div class=\"billplz-givewp-help-text\">
-                    <p>" . esc_html__( 'You will be redirected to Billplz.com to complete the donation!', 'billplz-givewp' ) . "</p>
+                    <p>" . esc_html__( 'You will be redirected to Billplz.com to complete the donation!', 'billplz-for-givewp' ) . "</p>
                 </div>";
     }
 
@@ -103,7 +103,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
             $is_supported_currency = give_get_currency( $donation->formId ) === 'MYR';
 
             if ( !$is_supported_currency ) {
-                throw new Exception(__('Currency not supported by selected payment option.'));
+                throw new Exception( __(' Currency not supported by selected payment option.', 'billplz-for-givewp' ) );
             }
 
             $sandbox = give_is_test_mode();
@@ -153,19 +153,19 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
             ) );
 
             if ( !$collection_id ) {
-                throw new Exception( __( 'Missing collection ID.', 'billplz-givewp' ) );
+                throw new Exception( __( 'Missing collection ID.', 'billplz-for-givewp' ) );
             }
 
             if ( !$donorName ) {
-                throw new PaymentGatewayException( __( 'Name is required.', 'billplz-givewp' ) );
+                throw new PaymentGatewayException( __( 'Name is required.', 'billplz-for-givewp' ) );
             }
 
             if ( !$donation->email && !$donation->phone ) {
-                throw new PaymentGatewayException( __( 'Email or phone is required.', 'billplz-givewp' ) );
+                throw new PaymentGatewayException( __( 'Email or phone is required.', 'billplz-for-givewp' ) );
             }
 
             if ( !$description ) {
-                throw new Exception( __( 'Bill description is required.', 'billplz-givewp' ) );
+                throw new Exception( __( 'Bill description is required.', 'billplz-for-givewp' ) );
             }
 
             $params = array(
@@ -190,7 +190,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
                 $bill_url = isset( $response['url'] ) ? $response['url'] : null;
 
                 if ( !$bill_url ) {
-                    throw new Exception( __( 'Unable to redirect to the bill payment page.', 'billplz-givewp' ) );
+                    throw new Exception( __( 'Unable to redirect to the bill payment page.', 'billplz-for-givewp' ) );
                 }
 
                 return new RedirectOffsite( $bill_url );
@@ -206,17 +206,19 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
                 }
             }
         } catch ( Exception $e ) {
-            $errorMessage = $e->getMessage();
-
             $donation->status = DonationStatus::FAILED();
             $donation->save();
 
             DonationNote::create([
                 'donationId' => $donation->id,
-                'content' => sprintf( esc_html__('Donation failed. Reason: %s', 'billplz-givewp'), $errorMessage ),
+                'content' => sprintf(
+                    /* translators: %s: Donation reason */
+                    esc_html__( 'Donation failed. Reason: %s', 'billplz-for-givewp' ),
+                    esc_html( $e->getMessage() )
+                ),
             ]);
 
-            throw new PaymentGatewayException( $errorMessage );
+            throw new PaymentGatewayException( esc_html( $e->getMessage() ) );
         }
     }
 
@@ -244,7 +246,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
             $donation = Donation::find( $data['donation-id'] );
 
             if ( !$donation ) {
-                throw new Exception( __( 'Donation not found.', 'billplz-givewp' ) );
+                throw new Exception( __( 'Donation not found.', 'billplz-for-givewp' ) );
             }
 
             if ( !$donation->status->isComplete() ) {
@@ -305,7 +307,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
             $donation = Donation::find( $data['donation-id'] );
 
             if ( !$donation ) {
-                throw new Exception( __( 'Donation not found.', 'billplz-givewp' ) );
+                throw new Exception( __( 'Donation not found.', 'billplz-for-givewp' ) );
             }
 
             if ( !$donation->status->isComplete() ) {
@@ -351,11 +353,11 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
         }
 
         if ( !$api_key ) {
-            throw new Exception( __( 'Missing API key.', 'billplz-givewp' ) );
+            throw new Exception( __( 'Missing API key.', 'billplz-for-givewp' ) );
         }
 
         if ( !$xsignature_key ) {
-            throw new Exception( __( 'Missing X-Signature key.', 'billplz-givewp' ) );
+            throw new Exception( __( 'Missing X-Signature key.', 'billplz-for-givewp' ) );
         }
 
         $billplz = new Billplz_GiveWP_API( $api_key, $xsignature_key, $sandbox );
@@ -365,7 +367,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
             return $response;
         }
 
-        throw new Exception( __( 'Unable to retrieve IPN response.', 'billplz-givewp' ) );
+        throw new Exception( __( 'Unable to retrieve IPN response.', 'billplz-for-givewp' ) );
     }
 
     /**
@@ -375,24 +377,24 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
      */
     private function handlePaymentCompletion( Donation $donation, array $response ) {
         $donation_status = DonationStatus::PENDING();
-        $payment_status = __( 'Pending', 'billplz-givewp' ); // Billplz payment status
+        $payment_status = __( 'Pending', 'billplz-for-givewp' ); // Billplz payment status
 
         // If Extra Payment Completion Information option is enabled in Billplz, get the transaction status
         if ( isset( $response['transaction_status'] ) ) {
             switch ( $response['transaction_status'] ) {
                 case 'completed':
                     $donation_status = DonationStatus::COMPLETE();
-                    $payment_status = __( 'Paid', 'billplz-givewp' );
+                    $payment_status = __( 'Paid', 'billplz-for-givewp' );
                     break;
 
                 case 'failed':
                     $donation_status = DonationStatus::FAILED();
-                    $payment_status = __( 'Failed', 'billplz-givewp' );
+                    $payment_status = __( 'Failed', 'billplz-for-givewp' );
                     break;
             }
         } elseif ( $response['paid'] == 'true' ) {
             $donation_status = DonationStatus::COMPLETE();
-            $payment_status = __( 'Paid', 'billplz-givewp' );
+            $payment_status = __( 'Paid', 'billplz-for-givewp' );
         }
 
         $donation->status = $donation_status;
@@ -402,17 +404,15 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
         $sandbox = give_is_test_mode();
 
         $sandbox_label = $sandbox
-            ? __( 'Yes', 'billplz-givewp' )
-            : __( 'No', 'billplz-givewp' );
+            ? __( 'Yes', 'billplz-for-givewp' )
+            : __( 'No', 'billplz-for-givewp' );
 
         // Create a donation note to display transaction details
         DonationNote::create( [
             'donationId' => $donation->id,
             'content' => sprintf(
-                esc_html__(
-                    "Billplz Payment Details\n\nBill ID: %1\$s\nPayment Status: %2\$s\nSandbox: %3\$s",
-                    'billplz-givewp'
-                ),
+                /* translators: 1: Bill ID, 2: Payment status, 3: Sandbox label */
+                esc_html__( "Billplz Payment Details\n\nBill ID: %1\$s\nPayment Status: %2\$s\nSandbox: %3\$s", 'billplz-for-givewp' ),
                 $response['id'],
                 $payment_status,
                 $sandbox_label
