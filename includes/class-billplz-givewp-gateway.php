@@ -103,7 +103,7 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
             $is_supported_currency = give_get_currency( $donation->formId ) === 'MYR';
 
             if ( !$is_supported_currency ) {
-                throw new Exception(__('Currency not supported by selected payment option.'));
+                throw new Exception(__('Currency not supported by selected payment option.', 'billplz-givewp'));
             }
 
             $sandbox = give_is_test_mode();
@@ -213,7 +213,11 @@ class Billplz_GiveWP_Gateway extends PaymentGateway {
 
             DonationNote::create([
                 'donationId' => $donation->id,
-                'content' => sprintf( esc_html__('Donation failed. Reason: %s', 'billplz-givewp'), $errorMessage ),
+                'content' => sprintf(
+                    /* translators: %s: Donation reason */
+                    esc_html__('Donation failed. Reason: %s', 'billplz-givewp'),
+                    $errorMessage
+                ),
             ]);
 
             throw new PaymentGatewayException( $errorMessage );
