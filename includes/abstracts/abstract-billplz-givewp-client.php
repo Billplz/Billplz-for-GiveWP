@@ -194,7 +194,10 @@ abstract class Billplz_GiveWP_Client {
             }
 
             if ( !isset( $_POST[ $param ] ) ) {
-                throw new Exception( sprintf( __( 'Missing IPN parameter - %s', 'billplz-for-givewp' ), $param ) );
+                throw new Exception(
+                    /* translators: %s: IPN parameter */
+                    sprintf( __( 'Missing IPN parameter - %s', 'billplz-for-givewp' ), $param )
+                );
             }
 
             $allowed_params[ $param ] = trim( sanitize_text_field( $_POST[ $param ] ) );
@@ -226,6 +229,7 @@ abstract class Billplz_GiveWP_Client {
             }
 
             if ( !isset( $_GET['billplz'][ $param ] ) ) {
+                /* translators: %s: IPN parameter */
                 throw new Exception( sprintf( __( 'Missing IPN parameter - %s', 'billplz-for-givewp' ), $param ) );
             }
 
