@@ -200,7 +200,7 @@ abstract class Billplz_GiveWP_Client {
                 );
             }
 
-            $allowed_params[ $param ] = trim( sanitize_text_field( $_POST[ $param ] ) );
+            $allowed_params[ $param ] = trim( sanitize_text_field( wp_unslash( $_POST[ $param ] ) ) );
         }
 
         // Returns only the allowed response data
@@ -239,7 +239,7 @@ abstract class Billplz_GiveWP_Client {
                 $param_new_key = 'billplz' . $param;
             }
 
-            $allowed_params[ $param_new_key ] = trim( sanitize_text_field( $_GET['billplz'][ $param ] ) );
+            $allowed_params[ $param_new_key ] = trim( sanitize_text_field( wp_unslash( $_GET['billplz'][ $param ] ) ) );
         }
 
         // Returns only the allowed response data
