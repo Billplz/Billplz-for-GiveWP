@@ -2,7 +2,7 @@
 Contributors: billplz, yiedpozi, wanzulnet
 Tags: give, donation, billplz, payment
 Requires at least: 4.6
-Tested up to: 6.7
+Tested up to: 6.8
 Stable tag: 4.0.0
 Requires PHP: 7.0
 License: GPLv3
@@ -13,6 +13,14 @@ Billplz payment integration for GiveWP.
 == Description ==
 
 Billplz payment integration for GiveWP.
+
+== How it works ==
+
+This plugin will connect to [Billplz API](https://www.billplz.com/api) to accept payments via multiple payment methods such as FPX online banking, credit card, Paypal and eWallet.
+
+[Sign up as a merchant](https://www.billplz.com/) to get started.
+
+You may use our sandbox environment for testing: [Billplz Sandbox](https://www.billplz-sandbox.com/)
 
 == Installation ==
 
