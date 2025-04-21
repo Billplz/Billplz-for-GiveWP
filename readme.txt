@@ -14,6 +14,14 @@ Billplz payment integration for GiveWP.
 
 Billplz payment integration for GiveWP.
 
+== How it works ==
+
+This plugin will connect to [Billplz API](https://www.billplz.com/api) to accept payments via multiple payment methods such as FPX online banking, credit card, Paypal and eWallet.
+
+[Sign up as a merchant](https://www.billplz.com/) to get started.
+
+You may use our sandbox environment for testing: [Billplz Sandbox](https://www.billplz-sandbox.com/)
+
 == Installation ==
 
 = Minimum Requirements =
