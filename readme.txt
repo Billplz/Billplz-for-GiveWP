@@ -39,6 +39,14 @@ In the search field type “Billplz for GiveWP,” then click “Search Plugins.
 
 Manual installation method requires downloading the Billplz for GiveWP plugin and uploading it to your web server via your favorite FTP application. The WordPress codex contains [instructions on how to do this here](https://wordpress.org/support/article/managing-plugins/#manual-plugin-installation).
 
+== Screenshots ==
+
+1. Enter your Billplz API credentials to enable the payment method.
+
+2. Donation Form
+
+3. Payment details can be viewed on donation details page on your WordPress admin under "Donation Notes" metabox.
+
 == Changelog ==
 
 = 4.0.0 - 2025-03-27 =
