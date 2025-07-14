@@ -3,7 +3,7 @@
  * Plugin Name: Billplz for GiveWP
  * Plugin URI: https://github.com/Billplz/billplz-for-givewp
  * Description: Billplz payment integration for GiveWP.
- * Version: 4.0.0
+ * Version: 4.0.1
  * Requires at least: 4.6
  * Requires PHP: 7.0
  * Author: Billplz Sdn Bhd
@@ -21,7 +21,7 @@ if ( !defined( 'BILLPLZ_GIVEWP_FILE' ) ) {
 }
 
 if ( !defined( 'BILLPLZ_GIVEWP_VERSION' ) ) {
-    define( 'BILLPLZ_GIVEWP_VERSION', '4.0.0' );
+    define( 'BILLPLZ_GIVEWP_VERSION', '4.0.1' );
 }
 
 // Plugin core class
