@@ -2,7 +2,7 @@
 Contributors: billplz, yiedpozi, wanzulnet
 Tags: give, donation, billplz, payment
 Requires at least: 4.6
-Tested up to: 6.8.1
+Tested up to: 6.8.2
 Stable tag: 4.0.1
 Requires PHP: 7.0
 License: GPLv3
