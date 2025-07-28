@@ -49,7 +49,7 @@ Manual installation method requires downloading the Billplz for GiveWP plugin an
 
 == Changelog ==
 
-= 4.0.1 - 2025-07-xx =
+= 4.0.1 - 2025-07-28 =
 - Fixed: Sanitize payment callback data without trimming values to prevent X-Signature mismatch
 
 = 4.0.0 - 2025-03-27 =
