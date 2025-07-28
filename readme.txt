@@ -2,8 +2,8 @@
 Contributors: billplz, yiedpozi, wanzulnet
 Tags: give, donation, billplz, payment
 Requires at least: 4.6
-Tested up to: 6.8
-Stable tag: 4.0.0
+Tested up to: 6.8.2
+Stable tag: 4.0.1
 Requires PHP: 7.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -48,6 +48,10 @@ Manual installation method requires downloading the Billplz for GiveWP plugin an
 3. Payment details can be viewed on donation details page on your WordPress admin under "Donation Notes" metabox.
 
 == Changelog ==
+
+= 4.0.1 - 2025-07-28 =
+- Fixed: Sanitize payment callback data without trimming values to prevent X-Signature mismatch
+- Fixed: Remove link to bill page when no transaction ID is recorded in the donation
 
 = 4.0.0 - 2025-03-27 =
 - Added: Support for Visual Donation Form Builder

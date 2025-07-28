@@ -168,6 +168,10 @@ class Billplz_GiveWP {
      * @param string $payment_id
      */
     public function link_transaction_id( $transaction_id, $payment_id ) {
+        if (!$transaction_id) {
+            return null;
+        }
+
         $donation = Donation::find( $payment_id );
 
         if ( $donation->mode->isLive() ) {
