@@ -1,5 +1,4 @@
 === Billplz for GiveWP ===
-Contributors: billplz, yiedpozi, wanzulnet
 Tags: give, donation, billplz, payment
 Requires at least: 4.6
 Tested up to: 6.8.2
